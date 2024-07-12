@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
+import { getTeamMembersRouter } from './routes';
+import { errorMiddleware } from './middleware';
 
 export const app = express();
 
@@ -15,3 +17,6 @@ app
       // origin: process.env.CLIENT_URL,
     })
   );
+
+app.use('/api/team-members', getTeamMembersRouter());
+app.use(errorMiddleware);

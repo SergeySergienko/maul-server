@@ -9,13 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
-const app_1 = require("./app");
-const repositories_1 = require("./repositories");
-const PORT = process.env.PORT || 5000;
-const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, repositories_1.runDb)();
-    app_1.app.listen(PORT, () => console.log('\x1b[36m%s\x1b[0m', `App is running on ${PORT} port...`));
-});
-startApp();
-//# sourceMappingURL=index.js.map
+exports.teamMemberCollection = void 0;
+exports.runDb = runDb;
+const mongodb_1 = require("mongodb");
+const url = process.env.DATABASE_URL;
+const client = new mongodb_1.MongoClient(url);
+exports.teamMemberCollection = client
+    .db('maul_db')
+    .collection('teamMembers');
+function runDb() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield client.connect();
+            console.log('\x1b[35m%s\x1b[0m', 'Pinged your deployment. You successfully connected to MongoDB!');
+        }
+        catch (error) {
+            console.log(error);
+            yield client.close();
+        }
+    });
+}
+//# sourceMappingURL=db.js.map
