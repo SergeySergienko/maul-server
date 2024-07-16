@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { TeamMemberModel } from '../models';
+import { EventModel, TeamMemberModel } from '../models';
 
 const url = process.env.DATABASE_URL as string;
 
@@ -7,6 +7,9 @@ const client = new MongoClient(url);
 export const teamMemberCollection = client
   .db('maul_db')
   .collection<TeamMemberModel>('teamMembers');
+export const eventCollection = client
+  .db('maul_db')
+  .collection<EventModel>('events');
 
 export async function runDb() {
   try {

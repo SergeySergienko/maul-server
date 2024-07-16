@@ -9,45 +9,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamMembersController = void 0;
+exports.eventsController = void 0;
 const services_1 = require("../services");
-exports.teamMembersController = {
-    findTeamMember(req, res, next) {
+exports.eventsController = {
+    findEvent(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const teamMember = yield services_1.teamMembersService.findTeamMember(req.params.id);
-                return res.json(teamMember);
+                const event = yield services_1.eventsService.findEvent(req.params.id);
+                return res.json(event);
             }
             catch (error) {
                 next(error);
             }
         });
     },
-    findTeamMembers(req, res, next) {
+    findEvents(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { limit, sort } = req.query;
             try {
-                const teamMembers = yield services_1.teamMembersService.findTeamMembers({
+                const events = yield services_1.eventsService.findEvents({
                     limit,
                     sort,
                 });
-                return res.json(teamMembers);
+                return res.json(events);
             }
             catch (error) {
                 next(error);
             }
         });
     },
-    createTeamMember(req, res, next) {
+    createEvent(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { body: { name, position }, file, } = req;
-                const teamMember = yield services_1.teamMembersService.createTeamMember({
-                    name,
-                    position,
-                    file,
+                const { date, title, description, location, teamPlace, coverPhoto } = req.body;
+                const files = req.files;
+                const event = yield services_1.eventsService.createEvent({
+                    date,
+                    title,
+                    description,
+                    location,
+                    teamPlace,
+                    files,
+                    coverPhoto,
                 });
-                return res.status(201).json(teamMember);
+                return res.status(201).json(event);
             }
             catch (error) {
                 next(error);
@@ -55,4 +60,4 @@ exports.teamMembersController = {
         });
     },
 };
-//# sourceMappingURL=teamMembers-controller.js.map
+//# sourceMappingURL=events-controller.js.map

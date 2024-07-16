@@ -9,20 +9,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.storageService = void 0;
-const storage_blob_1 = require("@azure/storage-blob");
-const api_error_1 = require("../exceptions/api-error");
-exports.storageService = {
-    writeFileToAzureStorage(containerName, fileName, fileBuffer) {
+exports.eventsRepo = void 0;
+const _1 = require(".");
+exports.eventsRepo = {
+    findEvent(field, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-            if (!connectionString) {
-                throw api_error_1.ApiError.BadRequest(409, 'Storage connection string is required');
+            return yield _1.eventCollection.findOne({ [field]: value });
+        });
+    },
+    findEvents(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
+            const options = {};
+            if (limit) {
+                options.limit = +limit;
             }
-            const blobFile = new storage_blob_1.BlockBlobClient(connectionString, containerName, fileName);
-            yield blobFile.uploadData(fileBuffer);
-            return blobFile;
+            options.sort = { date: sort || 'asc' };
+            return yield _1.eventCollection.find({}, options).toArray();
+        });
+    },
+    createEvent(event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield _1.eventCollection.insertOne(event);
         });
     },
 };
-//# sourceMappingURL=storage-service.js.map
+//# sourceMappingURL=events-repo.js.map

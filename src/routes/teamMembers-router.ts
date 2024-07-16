@@ -6,8 +6,13 @@ export const getTeamMembersRouter = () => {
   const router = express.Router();
 
   router.get('/', teamMembersController.findTeamMembers);
+  router.get('/:id', teamMembersController.findTeamMember);
 
-  router.post('/', multerMiddleware(), teamMembersController.createTeamMember);
+  router.post(
+    '/',
+    multerMiddleware('single'),
+    teamMembersController.createTeamMember
+  );
 
   return router;
 };

@@ -10,10 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.teamMembersService = void 0;
+const mongodb_1 = require("mongodb");
 const repositories_1 = require("../repositories");
 const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
 exports.teamMembersService = {
+    findTeamMember(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('_id', new mongodb_1.ObjectId(id));
+            if (!teamMember) {
+                throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
+                    {
+                        type: 'field',
+                        value: id,
+                        msg: 'not found',
+                        path: 'id',
+                        location: 'params',
+                    },
+                ]);
+            }
+            return teamMember;
+        });
+    },
     findTeamMembers(_a) {
         return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
             const teamMembers = yield repositories_1.teamMembersRepo.findTeamMembers({
@@ -34,7 +52,7 @@ exports.teamMembersService = {
                         type: 'field',
                         value: file || 'undefined',
                         msg: 'photo is required',
-                        path: 'photo',
+                        path: 'upload',
                         location: 'body',
                     },
                 ]);
@@ -45,13 +63,17 @@ exports.teamMembersService = {
                     {
                         type: 'field',
                         value: name,
-                        msg: 'team member name must be unique',
+                        msg: 'must be unique',
                         path: 'name',
                         location: 'body',
                     },
                 ]);
             }
-            const blobFile = yield _1.storageService.writeFileToAzureStorage(file.originalname, file.buffer);
+            const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
+            if (!containerName) {
+                throw api_error_1.ApiError.BadRequest(409, 'Storage container name is required');
+            }
+            const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, file.originalname, file.buffer);
             const newTeamMember = {
                 name,
                 position,

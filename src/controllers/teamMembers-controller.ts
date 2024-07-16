@@ -6,12 +6,27 @@ import {
   RequestWithBody,
   PostTeamMemberDto,
   RequestWithQuery,
-  GetTeamMembersQueryDto,
+  GetQueryDto,
+  GetParamsDto,
+  RequestWithParams,
 } from '../types';
 
 export const teamMembersController = {
+  async findTeamMember(
+    req: RequestWithParams<GetParamsDto>,
+    res: Response<WithId<TeamMemberModel>>,
+    next: NextFunction
+  ) {
+    try {
+      const teamMember = await teamMembersService.findTeamMember(req.params.id);
+      return res.json(teamMember);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async findTeamMembers(
-    req: RequestWithQuery<GetTeamMembersQueryDto>,
+    req: RequestWithQuery<GetQueryDto>,
     res: Response<WithId<TeamMemberModel>[]>,
     next: NextFunction
   ) {

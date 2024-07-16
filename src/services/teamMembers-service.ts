@@ -1,12 +1,31 @@
-import { WithId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersRepo } from '../repositories';
-import { GetTeamMembersQueryDto, PostTeamMemberDto } from '../types';
+import { GetQueryDto, PostTeamMemberDto } from '../types';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
 
 export const teamMembersService = {
-  async findTeamMembers({ limit, sort }: GetTeamMembersQueryDto) {
+  async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
+    const teamMember = await teamMembersRepo.findTeamMember(
+      '_id',
+      new ObjectId(id)
+    );
+    if (!teamMember) {
+      throw ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
+        {
+          type: 'field',
+          value: id,
+          msg: 'not found',
+          path: 'id',
+          location: 'params',
+        },
+      ]);
+    }
+    return teamMember;
+  },
+
+  async findTeamMembers({ limit, sort }: GetQueryDto) {
     const teamMembers = await teamMembersRepo.findTeamMembers({
       limit,
       sort,
@@ -29,7 +48,7 @@ export const teamMembersService = {
           type: 'field',
           value: file || 'undefined',
           msg: 'photo is required',
-          path: 'photo',
+          path: 'upload',
           location: 'body',
         },
       ]);
@@ -43,14 +62,21 @@ export const teamMembersService = {
           {
             type: 'field',
             value: name,
-            msg: 'team member name must be unique',
+            msg: 'must be unique',
             path: 'name',
             location: 'body',
           },
         ]
       );
     }
+
+    const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
+    if (!containerName) {
+      throw ApiError.BadRequest(409, 'Storage container name is required');
+    }
+
     const blobFile = await storageService.writeFileToAzureStorage(
+      containerName,
       file.originalname,
       file.buffer
     );

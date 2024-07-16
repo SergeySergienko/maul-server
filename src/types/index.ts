@@ -1,2 +1,2 @@
 export * from './http-types';
-export * from './teamMember-types';
+export * from './dto-types';

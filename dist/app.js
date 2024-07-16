@@ -19,6 +19,7 @@ exports.app
     credentials: true,
     // origin: process.env.CLIENT_URL,
 }));
+exports.app.use('/api/events', (0, routes_1.getEventsRouter)());
 exports.app.use('/api/team-members', (0, routes_1.getTeamMembersRouter)());
 exports.app.use(middleware_1.errorMiddleware);
 //# sourceMappingURL=app.js.map

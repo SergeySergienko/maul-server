@@ -10,7 +10,8 @@ const middleware_1 = require("../middleware");
 const getTeamMembersRouter = () => {
     const router = express_1.default.Router();
     router.get('/', controllers_1.teamMembersController.findTeamMembers);
-    router.post('/', (0, middleware_1.multerMiddleware)(), controllers_1.teamMembersController.createTeamMember);
+    router.get('/:id', controllers_1.teamMembersController.findTeamMember);
+    router.post('/', (0, middleware_1.multerMiddleware)('single'), controllers_1.teamMembersController.createTeamMember);
     return router;
 };
 exports.getTeamMembersRouter = getTeamMembersRouter;
