@@ -46,17 +46,6 @@ exports.teamMembersService = {
     },
     createTeamMember(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, position, file, }) {
-            if (!file) {
-                throw api_error_1.ApiError.BadRequest(409, 'Photo is required', [
-                    {
-                        type: 'field',
-                        value: file || 'undefined',
-                        msg: 'photo is required',
-                        path: 'upload',
-                        location: 'body',
-                    },
-                ]);
-            }
             const candidate = yield repositories_1.teamMembersRepo.findTeamMember('name', name);
             if (candidate) {
                 throw api_error_1.ApiError.BadRequest(409, `Team member with name ${name} already exists`, [
@@ -71,7 +60,7 @@ exports.teamMembersService = {
             }
             const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
             if (!containerName) {
-                throw api_error_1.ApiError.BadRequest(409, 'Storage container name is required');
+                throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
             }
             const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, file.originalname, file.buffer);
             const newTeamMember = {

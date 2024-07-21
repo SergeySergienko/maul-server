@@ -14,9 +14,10 @@ export const eventCollection = client
 export async function runDb() {
   try {
     await client.connect();
+    console.log('\n-------------------------------------------');
     console.log(
       '\x1b[35m%s\x1b[0m',
-      'Pinged your deployment. You successfully connected to MongoDB!'
+      '[OK] You successfully connected to MongoDB!'
     );
   } catch (error) {
     console.log(error);

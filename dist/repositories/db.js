@@ -24,7 +24,8 @@ function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield client.connect();
-            console.log('\x1b[35m%s\x1b[0m', 'Pinged your deployment. You successfully connected to MongoDB!');
+            console.log('\n-------------------------------------------');
+            console.log('\x1b[35m%s\x1b[0m', '[OK] You successfully connected to MongoDB!');
         }
         catch (error) {
             console.log(error);

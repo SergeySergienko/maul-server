@@ -15,7 +15,10 @@ const repositories_1 = require("./repositories");
 const PORT = process.env.PORT || 5000;
 const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, repositories_1.runDb)();
-    app_1.app.listen(PORT, () => console.log('\x1b[36m%s\x1b[0m', `App is running on ${PORT} port...`));
+    app_1.app.listen(PORT, () => {
+        console.log('\x1b[36m%s\x1b[0m', `[OK] App is running on ${PORT} port...`);
+        console.log('-------------------------------------------');
+    });
 });
 startApp();
 //# sourceMappingURL=index.js.map

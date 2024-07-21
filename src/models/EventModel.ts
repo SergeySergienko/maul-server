@@ -3,7 +3,7 @@ export interface EventModel {
   title: string;
   description: string;
   location: string;
-  teamPlace: string;
   photos: string[];
+  teamPlace?: string;
   coverPhoto?: string;
 }

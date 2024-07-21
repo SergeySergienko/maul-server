@@ -48,11 +48,8 @@ export const teamMembersController = {
     next: NextFunction
   ) {
     try {
-      const {
-        body: { name, position },
-        file,
-      } = req;
-
+      const { name, position } = req.body;
+      const file = req.file as Express.Multer.File;
       const teamMember = await teamMembersService.createTeamMember({
         name,
         position,

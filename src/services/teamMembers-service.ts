@@ -42,17 +42,6 @@ export const teamMembersService = {
     position,
     file,
   }: PostTeamMemberDto): Promise<WithId<TeamMemberModel>> {
-    if (!file) {
-      throw ApiError.BadRequest(409, 'Photo is required', [
-        {
-          type: 'field',
-          value: file || 'undefined',
-          msg: 'photo is required',
-          path: 'upload',
-          location: 'body',
-        },
-      ]);
-    }
     const candidate = await teamMembersRepo.findTeamMember('name', name);
     if (candidate) {
       throw ApiError.BadRequest(
@@ -72,7 +61,7 @@ export const teamMembersService = {
 
     const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
     if (!containerName) {
-      throw ApiError.BadRequest(409, 'Storage container name is required');
+      throw ApiError.BadRequest(400, 'Storage container name is required');
     }
 
     const blobFile = await storageService.writeFileToAzureStorage(

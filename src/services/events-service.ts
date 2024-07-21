@@ -45,7 +45,7 @@ export const eventsService = {
     coverPhoto,
   }: PostEventDto): Promise<WithId<EventModel>> {
     if (!files) {
-      throw ApiError.BadRequest(409, 'Photos are required', [
+      throw ApiError.BadRequest(400, 'Photos are required', [
         {
           type: 'field',
           value: files || 'undefined',
@@ -85,7 +85,7 @@ export const eventsService = {
     }
     const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
     if (!containerName) {
-      throw ApiError.BadRequest(409, 'Storage container name is required');
+      throw ApiError.BadRequest(400, 'Storage container name is required');
     }
 
     const photos: string[] = [];

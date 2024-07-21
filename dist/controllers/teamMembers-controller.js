@@ -41,7 +41,8 @@ exports.teamMembersController = {
     createTeamMember(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { body: { name, position }, file, } = req;
+                const { name, position } = req.body;
+                const file = req.file;
                 const teamMember = yield services_1.teamMembersService.createTeamMember({
                     name,
                     position,

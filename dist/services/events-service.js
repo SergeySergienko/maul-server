@@ -48,7 +48,7 @@ exports.eventsService = {
     createEvent(_a) {
         return __awaiter(this, arguments, void 0, function* ({ date, title, description, location, teamPlace, files, coverPhoto, }) {
             if (!files) {
-                throw api_error_1.ApiError.BadRequest(409, 'Photos are required', [
+                throw api_error_1.ApiError.BadRequest(400, 'Photos are required', [
                     {
                         type: 'field',
                         value: files || 'undefined',
@@ -83,7 +83,7 @@ exports.eventsService = {
             }
             const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
             if (!containerName) {
-                throw api_error_1.ApiError.BadRequest(409, 'Storage container name is required');
+                throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
             }
             const photos = [];
             for (const file of files) {

@@ -1,7 +1,7 @@
 export interface PostTeamMemberDto {
   name: string;
   position: string;
-  file?: Express.Multer.File;
+  file: Express.Multer.File;
 }
 
 export interface PostEventDto {
@@ -9,7 +9,7 @@ export interface PostEventDto {
   title: string;
   description: string;
   location: string;
-  teamPlace: string;
+  teamPlace?: string;
   files?: Express.Multer.File[];
   coverPhoto?: string;
 }
@@ -21,4 +21,5 @@ export interface GetParamsDto {
 export interface GetQueryDto {
   limit?: string;
   sort?: 'asc' | 'desc';
+  [key: string]: any;
 }
