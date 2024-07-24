@@ -10,7 +10,7 @@ export const storageService = {
     const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
     if (!connectionString) {
-      throw ApiError.BadRequest(400, 'Storage connection string is required');
+      throw ApiError.ServerError('Storage connection string is required');
     }
 
     const blobFile = new BlockBlobClient(

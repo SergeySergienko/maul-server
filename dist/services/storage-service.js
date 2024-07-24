@@ -17,7 +17,7 @@ exports.storageService = {
         return __awaiter(this, void 0, void 0, function* () {
             const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
             if (!connectionString) {
-                throw api_error_1.ApiError.BadRequest(400, 'Storage connection string is required');
+                throw api_error_1.ApiError.ServerError('Storage connection string is required');
             }
             const blobFile = new storage_blob_1.BlockBlobClient(connectionString, containerName, fileName);
             yield blobFile.uploadData(fileBuffer);

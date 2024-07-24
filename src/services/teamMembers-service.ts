@@ -4,6 +4,7 @@ import { teamMembersRepo } from '../repositories';
 import { GetQueryDto, PostTeamMemberDto } from '../types';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
+import { normalizeImage } from '../utils';
 
 export const teamMembersService = {
   async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
@@ -61,13 +62,20 @@ export const teamMembersService = {
 
     const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
     if (!containerName) {
-      throw ApiError.BadRequest(400, 'Storage container name is required');
+      throw ApiError.ServerError('Storage container name is required');
+    }
+
+    const { normalizedFileName, resizedImageBuffer } = await normalizeImage(
+      file
+    );
+    if (!normalizedFileName) {
+      throw ApiError.BadRequest(409, 'File extension is not allowed');
     }
 
     const blobFile = await storageService.writeFileToAzureStorage(
       containerName,
-      file.originalname,
-      file.buffer
+      normalizedFileName,
+      resizedImageBuffer
     );
 
     const newTeamMember = {

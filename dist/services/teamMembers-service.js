@@ -14,6 +14,7 @@ const mongodb_1 = require("mongodb");
 const repositories_1 = require("../repositories");
 const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
+const utils_1 = require("../utils");
 exports.teamMembersService = {
     findTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -60,9 +61,13 @@ exports.teamMembersService = {
             }
             const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
             if (!containerName) {
-                throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
+                throw api_error_1.ApiError.ServerError('Storage container name is required');
             }
-            const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, file.originalname, file.buffer);
+            const { normalizedFileName, resizedImageBuffer } = yield (0, utils_1.normalizeImage)(file);
+            if (!normalizedFileName) {
+                throw api_error_1.ApiError.BadRequest(409, 'File extension is not allowed');
+            }
+            const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, normalizedFileName, resizedImageBuffer);
             const newTeamMember = {
                 name,
                 position,
