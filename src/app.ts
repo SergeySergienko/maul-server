@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { getEventsRouter, getTeamMembersRouter } from './routes';
+import { eventsRouter, teamMembersRouter, usersRouter } from './routes';
 import { errorMiddleware } from './middleware';
 
 export const app = express();
@@ -18,6 +18,8 @@ app
     })
   );
 
-app.use('/api/events', getEventsRouter());
-app.use('/api/team-members', getTeamMembersRouter());
+app
+  .use('/api/users', usersRouter)
+  .use('/api/events', eventsRouter)
+  .use('/api/team-members', teamMembersRouter);
 app.use(errorMiddleware);

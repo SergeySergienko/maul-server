@@ -17,7 +17,7 @@ const startApp = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, repositories_1.runDb)();
     app_1.app.listen(PORT, () => {
         console.log('\x1b[36m%s\x1b[0m', `[OK] App is running on ${PORT} port...`);
-        console.log('-------------------------------------------');
+        console.log('--------------------------------------------');
     });
 });
 startApp();

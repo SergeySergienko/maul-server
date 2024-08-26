@@ -8,7 +8,7 @@ const startApp = async () => {
   await runDb();
   app.listen(PORT, () => {
     console.log('\x1b[36m%s\x1b[0m', `[OK] App is running on ${PORT} port...`);
-    console.log('-------------------------------------------');
+    console.log('--------------------------------------------');
   });
 };
 

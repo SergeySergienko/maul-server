@@ -17,4 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./events-service"), exports);
 __exportStar(require("./teamMembers-service"), exports);
 __exportStar(require("./storage-service"), exports);
+__exportStar(require("./users-service"), exports);
 //# sourceMappingURL=index.js.map

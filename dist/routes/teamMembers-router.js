@@ -26,17 +26,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTeamMembersRouter = void 0;
+exports.teamMembersRouter = void 0;
 const express_1 = __importDefault(require("express"));
 const controllers_1 = require("../controllers");
 const middleware_1 = require("../middleware");
 const validators_1 = __importStar(require("../validators"));
-const getTeamMembersRouter = () => {
-    const router = express_1.default.Router();
-    router.get('/', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMembers);
-    router.get('/:id', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMember);
-    router.post('/', (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.createTeamMember);
-    return router;
-};
-exports.getTeamMembersRouter = getTeamMembersRouter;
+exports.teamMembersRouter = express_1.default.Router();
+exports.teamMembersRouter.get('/', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMembers);
+exports.teamMembersRouter.get('/:id', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMember);
+exports.teamMembersRouter.post('/', (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.createTeamMember);
 //# sourceMappingURL=teamMembers-router.js.map

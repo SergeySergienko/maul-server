@@ -9,11 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eventCollection = exports.teamMemberCollection = void 0;
+exports.eventCollection = exports.teamMemberCollection = exports.userCollection = void 0;
 exports.runDb = runDb;
 const mongodb_1 = require("mongodb");
 const url = process.env.DATABASE_URL;
 const client = new mongodb_1.MongoClient(url);
+exports.userCollection = client
+    .db('maul_db')
+    .collection('users');
 exports.teamMemberCollection = client
     .db('maul_db')
     .collection('teamMembers');
@@ -22,10 +25,11 @@ exports.eventCollection = client
     .collection('events');
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         try {
             yield client.connect();
-            console.log('\n-------------------------------------------');
-            console.log('\x1b[35m%s\x1b[0m', '[OK] You successfully connected to MongoDB!');
+            console.log('\n--------------------------------------------');
+            console.log('\x1b[35m%s\x1b[0m', `[OK] You successfully connected to ${((_a = client.options) === null || _a === void 0 ? void 0 : _a.appName) || 'MongoDB'}!`);
         }
         catch (error) {
             console.log(error);
