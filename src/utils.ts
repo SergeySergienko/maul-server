@@ -3,7 +3,7 @@ import path from 'path';
 import sharp from 'sharp';
 import { NormalizedImageResult } from './types';
 import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
-import { RoleModel, UserModel, UserOutputModel } from './models';
+import { UserModel, UserOutputModel } from './models';
 
 export const isDateValid = (date: string) => {
   const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -45,7 +45,7 @@ export const userModelMapper = ({
 }: WithId<UserModel>): UserOutputModel => ({
   id: _id.toString(),
   email,
-  role: RoleModel[role] as keyof typeof RoleModel,
+  role,
   isActivated,
   activationToken,
 });

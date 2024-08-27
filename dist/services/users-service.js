@@ -16,7 +16,6 @@ exports.usersService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const uuid_1 = require("uuid");
 const api_error_1 = require("../exceptions/api-error");
-const models_1 = require("../models");
 const repositories_1 = require("../repositories");
 const utils_1 = require("../utils");
 exports.usersService = {
@@ -48,7 +47,7 @@ exports.usersService = {
             const newUser = {
                 email,
                 password: hashPassword,
-                role: models_1.RoleModel.USER,
+                role: 'USER',
                 activationToken: identifier,
                 isActivated: false,
             };

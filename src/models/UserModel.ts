@@ -1,7 +1,7 @@
 export interface UserModel {
   email: string;
   password: string;
-  role: RoleModel;
+  role: keyof typeof RoleModel;
   isActivated: boolean;
   activationToken?: string;
 }
@@ -21,7 +21,7 @@ export interface UserOutputModel {
 
 export interface UserUpdateModel {
   id: string;
-  role: RoleModel;
+  role: keyof typeof RoleModel;
 }
 
 export enum RoleModel {

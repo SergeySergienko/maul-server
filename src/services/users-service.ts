@@ -1,12 +1,7 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiError } from '../exceptions/api-error';
-import {
-  RoleModel,
-  UserInputModel,
-  UserModel,
-  UserUpdateModel,
-} from '../models';
+import { UserInputModel, UserModel, UserUpdateModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { GetQueryDto } from '../types';
@@ -43,7 +38,7 @@ export const usersService = {
     const newUser: UserModel = {
       email,
       password: hashPassword,
-      role: RoleModel.USER,
+      role: 'USER',
       activationToken: identifier,
       isActivated: false,
     };
