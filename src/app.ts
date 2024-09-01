@@ -2,7 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import path from 'path';
-import { eventsRouter, teamMembersRouter, usersRouter } from './routes';
+import {
+  authRouter,
+  eventsRouter,
+  teamMembersRouter,
+  usersRouter,
+} from './routes';
 import { errorMiddleware } from './middleware';
 
 export const app = express();
@@ -19,6 +24,7 @@ app
   );
 
 app
+  .use('/api/auth', authRouter)
   .use('/api/users', usersRouter)
   .use('/api/events', eventsRouter)
   .use('/api/team-members', teamMembersRouter);

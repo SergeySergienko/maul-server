@@ -20,6 +20,7 @@ exports.app
     // origin: process.env.CLIENT_URL,
 }));
 exports.app
+    .use('/api/auth', routes_1.authRouter)
     .use('/api/users', routes_1.usersRouter)
     .use('/api/events', routes_1.eventsRouter)
     .use('/api/team-members', routes_1.teamMembersRouter);

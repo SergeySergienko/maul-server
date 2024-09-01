@@ -49,7 +49,6 @@ exports.usersService = {
                 password: hashPassword,
                 role: 'USER',
                 activationToken: identifier,
-                isActivated: false,
             };
             const { insertedId } = yield repositories_1.usersRepo.createUser(newUser);
             if (!insertedId)
@@ -69,8 +68,8 @@ exports.usersService = {
     },
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield repositories_1.usersRepo.deleteUser(id);
-            if (result.deletedCount !== 1) {
+            const { deletedCount } = yield repositories_1.usersRepo.deleteUser(id);
+            if (deletedCount !== 1) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${id} wasn't found`);
             }
             return id;

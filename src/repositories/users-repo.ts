@@ -26,12 +26,25 @@ export const usersRepo = {
     return await userCollection.insertOne(user);
   },
 
-  async updateUser({ id, role }: UserUpdateModel) {
+  async updateUser(updateData: UserUpdateModel) {
+    const { id, ...fieldsToUpdate } = updateData;
+
+    const updateFields = Object.entries(fieldsToUpdate).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          (acc as any)[key] = value;
+        }
+        return acc;
+      },
+      {} as Partial<UserUpdateModel>
+    );
+
     const result = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: { role } },
+      { $set: updateFields },
       { returnDocument: 'after' }
     );
+
     return result.value;
   },
 

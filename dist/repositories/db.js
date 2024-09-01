@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eventCollection = exports.teamMemberCollection = exports.userCollection = void 0;
+exports.tokenCollection = exports.eventCollection = exports.teamMemberCollection = exports.userCollection = void 0;
 exports.runDb = runDb;
 const mongodb_1 = require("mongodb");
 const url = process.env.DATABASE_URL;
@@ -23,6 +23,9 @@ exports.teamMemberCollection = client
 exports.eventCollection = client
     .db('maul_db')
     .collection('events');
+exports.tokenCollection = client
+    .db('maul_db')
+    .collection('tokens');
 function runDb() {
     return __awaiter(this, void 0, void 0, function* () {
         var _a;

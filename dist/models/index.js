@@ -17,4 +17,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./TeamMemberModel"), exports);
 __exportStar(require("./EventModel"), exports);
 __exportStar(require("./UserModel"), exports);
+__exportStar(require("./TokenModel"), exports);
 //# sourceMappingURL=index.js.map

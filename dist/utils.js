@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userModelMapper = exports.normalizeImage = exports.isDateValid = void 0;
+exports.setCookie = exports.getUserWithTokens = exports.userModelMapper = exports.normalizeImage = exports.isDateValid = void 0;
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const constants_1 = require("./constants");
+const services_1 = require("./services");
 const isDateValid = (date) => {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(date);
@@ -37,12 +38,27 @@ const normalizeImage = (file) => __awaiter(void 0, void 0, void 0, function* () 
     };
 });
 exports.normalizeImage = normalizeImage;
-const userModelMapper = ({ _id, email, role, isActivated, activationToken, }) => ({
+const userModelMapper = ({ _id, email, role, activationToken, }) => ({
     id: _id.toString(),
     email,
     role,
-    isActivated,
     activationToken,
 });
 exports.userModelMapper = userModelMapper;
+const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = (0, exports.userModelMapper)(userData);
+    const tokens = services_1.tokensService.generateTokens(user);
+    yield services_1.tokensService.saveToken({
+        userId: user.id,
+        refreshToken: tokens.refreshToken,
+    });
+    return Object.assign(Object.assign({}, tokens), { user });
+});
+exports.getUserWithTokens = getUserWithTokens;
+const setCookie = (res, cookieName, cookieValue) => res.cookie(cookieName, cookieValue, {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: 'none',
+});
+exports.setCookie = setCookie;
 //# sourceMappingURL=utils.js.map

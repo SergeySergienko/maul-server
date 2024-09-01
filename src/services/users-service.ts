@@ -40,7 +40,6 @@ export const usersService = {
       password: hashPassword,
       role: 'USER',
       activationToken: identifier,
-      isActivated: false,
     };
 
     const { insertedId } = await usersRepo.createUser(newUser);
@@ -62,8 +61,8 @@ export const usersService = {
   },
 
   async deleteUser(id: string) {
-    const result = await usersRepo.deleteUser(id);
-    if (result.deletedCount !== 1) {
+    const { deletedCount } = await usersRepo.deleteUser(id);
+    if (deletedCount !== 1) {
       throw ApiError.NotFound(`User with id: ${id} wasn't found`);
     }
     return id;
