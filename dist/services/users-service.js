@@ -18,6 +18,7 @@ const uuid_1 = require("uuid");
 const api_error_1 = require("../exceptions/api-error");
 const repositories_1 = require("../repositories");
 const utils_1 = require("../utils");
+const constants_1 = require("../constants");
 exports.usersService = {
     findUsers(_a) {
         return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
@@ -47,7 +48,7 @@ exports.usersService = {
             const newUser = {
                 email,
                 password: hashPassword,
-                role: 'USER',
+                role: constants_1.ALLOWED_ROLES[0],
                 activationToken: identifier,
             };
             const { insertedId } = yield repositories_1.usersRepo.createUser(newUser);

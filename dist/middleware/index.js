@@ -16,5 +16,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./multerMiddleware"), exports);
 __exportStar(require("./validationResultMiddleware"), exports);
+__exportStar(require("./checkUserUpdateMiddleware"), exports);
 __exportStar(require("./errorMiddleware"), exports);
 //# sourceMappingURL=index.js.map

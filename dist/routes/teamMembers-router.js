@@ -32,7 +32,7 @@ const controllers_1 = require("../controllers");
 const middleware_1 = require("../middleware");
 const validators_1 = __importStar(require("../validators"));
 exports.teamMembersRouter = express_1.default.Router();
-exports.teamMembersRouter.get('/', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMembers);
-exports.teamMembersRouter.get('/:id', (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.findTeamMember);
-exports.teamMembersRouter.post('/', (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.validators), controllers_1.teamMembersController.createTeamMember);
+exports.teamMembersRouter.get('/', (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.findTeamMembers);
+exports.teamMembersRouter.get('/:id', (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.findTeamMember);
+exports.teamMembersRouter.post('/', (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.createTeamMember);
 //# sourceMappingURL=teamMembers-router.js.map

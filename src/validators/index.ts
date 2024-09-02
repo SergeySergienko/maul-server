@@ -1,15 +1,13 @@
 import { Response, NextFunction } from 'express';
 import { ValidationChain, validationResult } from 'express-validator';
-import { UniversalRequest, PostTeamMemberDto, GetQueryDto } from '../types';
-export * from './teamMembers-validator';
+import { UniversalRequest } from '../types';
+export * from './rules';
+export * from './teamMembers-validators';
+export * from './users-validators';
 
 const validateRequest =
   (validators: { [key: string]: ValidationChain[] }) =>
-  async (
-    req: UniversalRequest<{}, PostTeamMemberDto, GetQueryDto>,
-    res: Response,
-    next: NextFunction
-  ) => {
+  async (req: UniversalRequest, res: Response, next: NextFunction) => {
     const methodUrl = `${req.method} ${req.baseUrl}${req.route.path}`;
     const rules = validators[methodUrl];
 

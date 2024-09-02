@@ -5,6 +5,7 @@ import { UserInputModel, UserModel, UserUpdateModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { GetQueryDto } from '../types';
+import { ALLOWED_ROLES } from '../constants';
 
 export const usersService = {
   async findUsers({ limit, sort }: GetQueryDto) {
@@ -38,7 +39,7 @@ export const usersService = {
     const newUser: UserModel = {
       email,
       password: hashPassword,
-      role: 'USER',
+      role: ALLOWED_ROLES[0],
       activationToken: identifier,
     };
 

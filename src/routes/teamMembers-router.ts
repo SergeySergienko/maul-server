@@ -1,23 +1,23 @@
 import express from 'express';
 import { teamMembersController } from '../controllers';
 import { multerMiddleware } from '../middleware';
-import validateRequest, { validators } from '../validators';
+import validateRequest, { teamMembersValidators } from '../validators';
 
 export const teamMembersRouter = express.Router();
 
 teamMembersRouter.get(
   '/',
-  validateRequest(validators),
+  validateRequest(teamMembersValidators),
   teamMembersController.findTeamMembers
 );
 teamMembersRouter.get(
   '/:id',
-  validateRequest(validators),
+  validateRequest(teamMembersValidators),
   teamMembersController.findTeamMember
 );
 teamMembersRouter.post(
   '/',
   multerMiddleware('single'),
-  validateRequest(validators),
+  validateRequest(teamMembersValidators),
   teamMembersController.createTeamMember
 );
