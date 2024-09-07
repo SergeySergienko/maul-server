@@ -32,8 +32,8 @@ const controllers_1 = require("../controllers");
 const validators_1 = __importStar(require("../validators"));
 const middleware_1 = require("../middleware");
 exports.usersRouter = express_1.default.Router();
-exports.usersRouter.get('/', (0, validators_1.default)(validators_1.usersValidators), controllers_1.usersController.findUsers);
+exports.usersRouter.get('/', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.usersValidators), controllers_1.usersController.findUsers);
 exports.usersRouter.post('/', (0, validators_1.default)(validators_1.usersValidators), controllers_1.usersController.createUser);
-exports.usersRouter.put('/', (0, validators_1.default)(validators_1.usersValidators), middleware_1.checkUserUpdateMiddleware, controllers_1.usersController.updateUser);
-exports.usersRouter.delete('/:id', (0, validators_1.default)(validators_1.usersValidators), controllers_1.usersController.deleteUser);
+exports.usersRouter.put('/', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.usersValidators), middleware_1.checkUserUpdateMiddleware, controllers_1.usersController.updateUser);
+exports.usersRouter.delete('/:id', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.usersValidators), middleware_1.checkUserDeleteMiddleware, controllers_1.usersController.deleteUser);
 //# sourceMappingURL=users-router.js.map

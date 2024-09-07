@@ -50,6 +50,7 @@ exports.usersService = {
                 password: hashPassword,
                 role: constants_1.ALLOWED_ROLES[0],
                 activationToken: identifier,
+                createdAt: new Date(),
             };
             const { insertedId } = yield repositories_1.usersRepo.createUser(newUser);
             if (!insertedId)

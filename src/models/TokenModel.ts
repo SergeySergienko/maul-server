@@ -1,9 +1,9 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { UserOutputModel } from '.';
+import { UserOutputDTO } from '../types/dto-types';
 
 export interface TokenModel {
   userId: string;
   refreshToken: string;
 }
 
-export interface CustomJwtPayload extends JwtPayload, UserOutputModel {}
+export interface CustomJwtPayload extends JwtPayload, UserOutputDTO {}

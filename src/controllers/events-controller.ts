@@ -2,18 +2,12 @@ import { Response, NextFunction } from 'express';
 import { WithId } from 'mongodb';
 import { EventModel } from '../models';
 import { eventsService } from '../services';
-import {
-  RequestWithBody,
-  RequestWithQuery,
-  GetQueryDto,
-  GetParamsDto,
-  RequestWithParams,
-  PostEventDto,
-} from '../types';
+import { RequestWithBody, RequestWithQuery, RequestWithParams } from '../types';
+import { IdParamsDTO, PostEventDTO, QueryDTO } from '../types/dto-types';
 
 export const eventsController = {
   async findEvent(
-    req: RequestWithParams<GetParamsDto>,
+    req: RequestWithParams<IdParamsDTO>,
     res: Response<WithId<EventModel>>,
     next: NextFunction
   ) {
@@ -26,7 +20,7 @@ export const eventsController = {
   },
 
   async findEvents(
-    req: RequestWithQuery<GetQueryDto>,
+    req: RequestWithQuery<QueryDTO>,
     res: Response<WithId<EventModel>[]>,
     next: NextFunction
   ) {
@@ -43,7 +37,7 @@ export const eventsController = {
   },
 
   async createEvent(
-    req: RequestWithBody<PostEventDto>,
+    req: RequestWithBody<PostEventDTO>,
     res: Response<WithId<EventModel>>,
     next: NextFunction
   ) {

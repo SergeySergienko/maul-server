@@ -1,14 +1,14 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiError } from '../exceptions/api-error';
-import { UserInputModel, UserModel, UserUpdateModel } from '../models';
+import { UserModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
-import { GetQueryDto } from '../types';
 import { ALLOWED_ROLES } from '../constants';
+import { QueryDTO, UserInputDTO, UserUpdateDTO } from '../types/dto-types';
 
 export const usersService = {
-  async findUsers({ limit, sort }: GetQueryDto) {
+  async findUsers({ limit, sort }: QueryDTO) {
     const users = await usersRepo.findUsers({ limit, sort });
     if (!users) {
       throw ApiError.ServerError('Internal Server Error');
@@ -16,7 +16,7 @@ export const usersService = {
     return users.map(userModelMapper);
   },
 
-  async createUser({ email, password: userPassword }: UserInputModel) {
+  async createUser({ email, password: userPassword }: UserInputDTO) {
     const candidate = await usersRepo.findUser('email', email);
     if (candidate) {
       throw ApiError.BadRequest(
@@ -41,6 +41,7 @@ export const usersService = {
       password: hashPassword,
       role: ALLOWED_ROLES[0],
       activationToken: identifier,
+      createdAt: new Date(),
     };
 
     const { insertedId } = await usersRepo.createUser(newUser);
@@ -51,7 +52,7 @@ export const usersService = {
     return userModelMapper({ ...newUser, _id: insertedId });
   },
 
-  async updateUser(userDataToUpdate: UserUpdateModel) {
+  async updateUser(userDataToUpdate: UserUpdateDTO) {
     const updatedUser = await usersRepo.updateUser(userDataToUpdate);
     if (!updatedUser) {
       throw ApiError.NotFound(

@@ -1,10 +1,10 @@
 import { ObjectId, WithId } from 'mongodb';
 import { EventModel } from '../models';
 import { eventsRepo } from '../repositories';
-import { GetQueryDto, PostEventDto } from '../types';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { isDateValid } from '../utils';
+import { PostEventDTO, QueryDTO } from '../types/dto-types';
 
 export const eventsService = {
   async findEvent(id: string) {
@@ -23,7 +23,7 @@ export const eventsService = {
     return event;
   },
 
-  async findEvents({ limit, sort }: GetQueryDto) {
+  async findEvents({ limit, sort }: QueryDTO) {
     const events = await eventsRepo.findEvents({
       limit,
       sort,
@@ -43,7 +43,7 @@ export const eventsService = {
     teamPlace,
     files,
     coverPhoto,
-  }: PostEventDto): Promise<WithId<EventModel>> {
+  }: PostEventDTO): Promise<WithId<EventModel>> {
     if (!files) {
       throw ApiError.BadRequest(400, 'Photos are required', [
         {

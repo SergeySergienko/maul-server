@@ -1,17 +1,18 @@
 import { NextFunction, Response } from 'express';
-import { UserInputModel, UserOutputModel, UserUpdateModel } from '../models';
 import { usersService } from '../services';
+import { RequestWithBody, RequestWithParams, RequestWithQuery } from '../types';
 import {
-  GetQueryDto,
-  RequestWithBody,
-  RequestWithParams,
-  RequestWithQuery,
-} from '../types';
+  IdParamsDTO,
+  QueryDTO,
+  UserInputDTO,
+  UserOutputDTO,
+  UserUpdateDTO,
+} from '../types/dto-types';
 
 export const usersController = {
   async findUsers(
-    req: RequestWithQuery<GetQueryDto>,
-    res: Response<UserOutputModel[]>,
+    req: RequestWithQuery<QueryDTO>,
+    res: Response<UserOutputDTO[]>,
     next: NextFunction
   ) {
     try {
@@ -23,7 +24,7 @@ export const usersController = {
   },
 
   async createUser(
-    req: RequestWithBody<UserInputModel>,
+    req: RequestWithBody<UserInputDTO>,
     res: Response,
     next: NextFunction
   ) {
@@ -36,8 +37,8 @@ export const usersController = {
   },
 
   async updateUser(
-    req: RequestWithBody<UserUpdateModel>,
-    res: Response<UserOutputModel>,
+    req: RequestWithBody<UserUpdateDTO>,
+    res: Response<UserOutputDTO>,
     next: NextFunction
   ) {
     try {
@@ -49,7 +50,7 @@ export const usersController = {
   },
 
   async deleteUser(
-    req: RequestWithParams<{ id: string }>,
+    req: RequestWithParams<IdParamsDTO>,
     res: Response,
     next: NextFunction
   ) {

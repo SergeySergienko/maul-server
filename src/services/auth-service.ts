@@ -1,12 +1,13 @@
 import bcrypt from 'bcrypt';
 import { ApiError } from '../exceptions/api-error';
-import { CustomJwtPayload, UserInputModel } from '../models';
+import { CustomJwtPayload } from '../models';
 import { tokensRepo, usersRepo } from '../repositories';
 import { getUserWithTokens } from '../utils';
 import { tokensService } from '.';
+import { UserInputDTO } from '../types/dto-types';
 
 export const authService = {
-  async login({ email, password }: UserInputModel) {
+  async login({ email, password }: UserInputDTO) {
     const currentUser = await usersRepo.findUser('email', email);
     if (!currentUser) {
       throw ApiError.NotFound('Incorrect login or password');

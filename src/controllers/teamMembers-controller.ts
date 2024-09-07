@@ -2,18 +2,12 @@ import { Response, NextFunction } from 'express';
 import { WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersService } from '../services';
-import {
-  RequestWithBody,
-  PostTeamMemberDto,
-  RequestWithQuery,
-  GetQueryDto,
-  GetParamsDto,
-  RequestWithParams,
-} from '../types';
+import { RequestWithBody, RequestWithQuery, RequestWithParams } from '../types';
+import { IdParamsDTO, PostTeamMemberDTO, QueryDTO } from '../types/dto-types';
 
 export const teamMembersController = {
   async findTeamMember(
-    req: RequestWithParams<GetParamsDto>,
+    req: RequestWithParams<IdParamsDTO>,
     res: Response<WithId<TeamMemberModel>>,
     next: NextFunction
   ) {
@@ -26,7 +20,7 @@ export const teamMembersController = {
   },
 
   async findTeamMembers(
-    req: RequestWithQuery<GetQueryDto>,
+    req: RequestWithQuery<QueryDTO>,
     res: Response<WithId<TeamMemberModel>[]>,
     next: NextFunction
   ) {
@@ -43,7 +37,7 @@ export const teamMembersController = {
   },
 
   async createTeamMember(
-    req: RequestWithBody<PostTeamMemberDto>,
+    req: RequestWithBody<PostTeamMemberDTO>,
     res: Response<WithId<TeamMemberModel>>,
     next: NextFunction
   ) {

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { RequestWithBody, RequestWithParams } from '../types';
-import { UserInputModel } from '../models';
 import { setCookie } from '../utils';
 import { authService } from '../services';
+import { UserInputDTO } from '../types/dto-types';
 
 export const authController = {
   async login(
-    req: RequestWithBody<UserInputModel>,
+    req: RequestWithBody<UserInputDTO>,
     res: Response,
     next: NextFunction
   ) {

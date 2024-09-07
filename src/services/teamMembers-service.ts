@@ -1,10 +1,10 @@
 import { ObjectId, WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersRepo } from '../repositories';
-import { GetQueryDto, PostTeamMemberDto } from '../types';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage } from '../utils';
+import { PostTeamMemberDTO, QueryDTO } from '../types/dto-types';
 
 export const teamMembersService = {
   async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
@@ -26,7 +26,7 @@ export const teamMembersService = {
     return teamMember;
   },
 
-  async findTeamMembers({ limit, sort }: GetQueryDto) {
+  async findTeamMembers({ limit, sort }: QueryDTO) {
     const teamMembers = await teamMembersRepo.findTeamMembers({
       limit,
       sort,
@@ -42,7 +42,7 @@ export const teamMembersService = {
     name,
     position,
     file,
-  }: PostTeamMemberDto): Promise<WithId<TeamMemberModel>> {
+  }: PostTeamMemberDTO): Promise<WithId<TeamMemberModel>> {
     const candidate = await teamMembersRepo.findTeamMember('name', name);
     if (candidate) {
       throw ApiError.BadRequest(

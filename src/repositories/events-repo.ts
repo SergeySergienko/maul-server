@@ -1,7 +1,7 @@
 import { FindOptions, WithId } from 'mongodb';
 import { eventCollection } from '.';
 import { EventModel } from '../models';
-import { GetQueryDto } from '../types';
+import { QueryDTO } from '../types/dto-types';
 
 export const eventsRepo = {
   async findEvent<T extends keyof WithId<EventModel>>(
@@ -11,7 +11,7 @@ export const eventsRepo = {
     return await eventCollection.findOne({ [field]: value });
   },
 
-  async findEvents({ limit, sort }: GetQueryDto) {
+  async findEvents({ limit, sort }: QueryDTO) {
     const options: FindOptions = {};
 
     if (limit) {

@@ -1,7 +1,7 @@
 import { FindOptions, WithId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
-import { GetQueryDto } from '../types';
+import { QueryDTO } from '../types/dto-types';
 
 export const teamMembersRepo = {
   async findTeamMember<T extends keyof WithId<TeamMemberModel>>(
@@ -11,7 +11,7 @@ export const teamMembersRepo = {
     return await teamMemberCollection.findOne({ [field]: value });
   },
 
-  async findTeamMembers({ limit, sort }: GetQueryDto) {
+  async findTeamMembers({ limit, sort }: QueryDTO) {
     const options: FindOptions = {};
 
     if (limit) {

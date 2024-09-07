@@ -26,6 +26,9 @@ const _1 = require(".");
 exports.usersRepo = {
     findUser(field, value) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (field === 'id') {
+                return yield _1.userCollection.findOne({ _id: new mongodb_1.ObjectId(value) });
+            }
             return yield _1.userCollection.findOne({ [field]: value });
         });
     },
@@ -53,7 +56,7 @@ exports.usersRepo = {
                 }
                 return acc;
             }, {});
-            const result = yield _1.userCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: updateFields }, { returnDocument: 'after' });
+            const result = yield _1.userCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, updateFields), { updatedAt: new Date() }) }, { returnDocument: 'after' });
             return result.value;
         });
     },

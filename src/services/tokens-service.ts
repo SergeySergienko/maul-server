@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
 import { ApiError } from '../exceptions/api-error';
-import { TokenModel, UserOutputModel } from '../models';
+import { TokenModel } from '../models';
 import { tokensRepo } from '../repositories';
 import { accessTokenExpiryTime, refreshTokenExpiryTime } from './constants';
+import { UserOutputDTO } from '../types/dto-types';
 
 export const tokensService = {
-  generateTokens(payload: UserOutputModel) {
+  generateTokens(payload: UserOutputDTO) {
     if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET)
       throw ApiError.ServerError('Internal Server Error');
 

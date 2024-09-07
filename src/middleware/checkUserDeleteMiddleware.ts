@@ -1,19 +1,18 @@
 import { NextFunction, Response } from 'express';
 import { ApiError } from '../exceptions/api-error';
 import { CustomJwtPayload, RoleModel } from '../models';
-import { RequestWithBody } from '../types';
+import { RequestWithParams } from '../types';
 import { tokensService } from '../services';
 import { usersRepo } from '../repositories';
-import { UserUpdateDTO } from '../types/dto-types';
+import { IdParamsDTO } from '../types/dto-types';
 
-export const checkUserUpdateMiddleware = async (
-  req: RequestWithBody<UserUpdateDTO>,
+export const checkUserDeleteMiddleware = async (
+  req: RequestWithParams<IdParamsDTO>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { refreshToken } = req.cookies;
-    const role = req.body.role as keyof typeof RoleModel;
 
     const secret = process.env.JWT_REFRESH_SECRET;
     if (!secret) {
@@ -28,21 +27,22 @@ export const checkUserUpdateMiddleware = async (
       throw ApiError.UnauthorizedError();
     }
 
-    if (userData.id === req.body.id) {
-      throw ApiError.ForbiddenError('User is not allowed to update their role');
-    }
-
-    const candidateToUpdate = await usersRepo.findUser('id', req.body.id);
-    if (!candidateToUpdate) {
+    const candidateToDelete = await usersRepo.findUser('id', req.params.id);
+    if (!candidateToDelete) {
       throw ApiError.BadRequest(400, 'User id is incorrect');
     }
 
+    if (userData.id === candidateToDelete._id.toString()) {
+      throw ApiError.ForbiddenError('User is not allowed to delete themselves');
+    }
+
     const hasRole =
-      RoleModel[userData.role] > RoleModel[role] &&
-      RoleModel[userData.role] > RoleModel[candidateToUpdate.role];
+      RoleModel[userData.role] > RoleModel[candidateToDelete.role];
 
     if (!hasRole) {
-      throw ApiError.ForbiddenError('No permission to change role');
+      throw ApiError.ForbiddenError(
+        `No permission to delete user with ${candidateToDelete.role} role`
+      );
     }
 
     next();

@@ -1,17 +1,17 @@
 import { FindOptions, ObjectId } from 'mongodb';
 import { userCollection } from '.';
-import { UserModel, UserOutputModel, UserUpdateModel } from '../models';
-import { GetQueryDto } from '../types';
+import { UserModel } from '../models';
+import { QueryDTO, UserFindDTO, UserUpdateDTO } from '../types/dto-types';
 
 export const usersRepo = {
-  async findUser<T extends keyof UserOutputModel>(
-    field: T,
-    value: UserOutputModel[T]
-  ) {
+  async findUser<T extends keyof UserFindDTO>(field: T, value: UserFindDTO[T]) {
+    if (field === 'id') {
+      return await userCollection.findOne({ _id: new ObjectId(value) });
+    }
     return await userCollection.findOne({ [field]: value });
   },
 
-  async findUsers({ limit, sort }: GetQueryDto) {
+  async findUsers({ limit, sort }: QueryDTO) {
     const options: FindOptions = {};
 
     if (limit) {
@@ -26,7 +26,7 @@ export const usersRepo = {
     return await userCollection.insertOne(user);
   },
 
-  async updateUser(updateData: UserUpdateModel) {
+  async updateUser(updateData: UserUpdateDTO) {
     const { id, ...fieldsToUpdate } = updateData;
 
     const updateFields = Object.entries(fieldsToUpdate).reduce(
@@ -36,12 +36,12 @@ export const usersRepo = {
         }
         return acc;
       },
-      {} as Partial<UserUpdateModel>
+      {} as Partial<UserUpdateDTO>
     );
 
     const result = await userCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: updateFields },
+      { $set: { ...updateFields, updatedAt: new Date() } },
       { returnDocument: 'after' }
     );
 

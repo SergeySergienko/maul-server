@@ -38,11 +38,12 @@ const normalizeImage = (file) => __awaiter(void 0, void 0, void 0, function* () 
     };
 });
 exports.normalizeImage = normalizeImage;
-const userModelMapper = ({ _id, email, role, activationToken, }) => ({
+const userModelMapper = ({ _id, email, role, createdAt, updatedAt, }) => ({
     id: _id.toString(),
     email,
     role,
-    activationToken,
+    createdAt,
+    updatedAt,
 });
 exports.userModelMapper = userModelMapper;
 const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, function* () {
