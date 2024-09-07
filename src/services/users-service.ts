@@ -6,6 +6,7 @@ import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { ALLOWED_ROLES } from '../constants';
 import { QueryDTO, UserInputDTO, UserUpdateDTO } from '../types/dto-types';
+import mailService from './mail-service';
 
 export const usersService = {
   async findUsers({ limit, sort }: QueryDTO) {
@@ -47,7 +48,7 @@ export const usersService = {
     const { insertedId } = await usersRepo.createUser(newUser);
     if (!insertedId) throw ApiError.ServerError('User was not inserted');
 
-    // await mailService.sendActivationMail(email, identifier);
+    await mailService.sendActivationMail(email, identifier);
 
     return userModelMapper({ ...newUser, _id: insertedId });
   },

@@ -19,6 +19,7 @@ const api_error_1 = require("../exceptions/api-error");
 const repositories_1 = require("../repositories");
 const utils_1 = require("../utils");
 const constants_1 = require("../constants");
+const mail_service_1 = __importDefault(require("./mail-service"));
 exports.usersService = {
     findUsers(_a) {
         return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
@@ -55,7 +56,7 @@ exports.usersService = {
             const { insertedId } = yield repositories_1.usersRepo.createUser(newUser);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('User was not inserted');
-            // await mailService.sendActivationMail(email, identifier);
+            yield mail_service_1.default.sendActivationMail(email, identifier);
             return (0, utils_1.userModelMapper)(Object.assign(Object.assign({}, newUser), { _id: insertedId }));
         });
     },
