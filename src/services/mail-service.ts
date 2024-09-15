@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { ApiError } from '../exceptions/api-error';
+import { CLIENT_ORIGIN } from '../constants';
 
 class MailService {
   transport;
@@ -18,7 +19,7 @@ class MailService {
         from: 'no-reply <maul-server>',
         to,
         subject: 'Account activation',
-        html: `Follow this <a href="${process.env.CLIENT_URL}/email-confirmation/${identifier}">link</a> to verify your email address`,
+        html: `Follow this <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address`,
       });
     } catch (error) {
       throw ApiError.ServerError('Internal Server Error');

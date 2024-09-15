@@ -1,9 +1,14 @@
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { WithId } from 'mongodb';
 import path from 'path';
 import sharp from 'sharp';
 import { NormalizedImageResult } from './types';
-import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
+import {
+  ALLOWED_EXTENSIONS,
+  CLIENT_ORIGIN,
+  IMAGE_HEIGHT,
+  IMAGE_WIDTH,
+} from './constants';
 import { UserModel } from './models';
 import { tokensService } from './services';
 import { UserOutputDTO } from './types/dto-types';
@@ -71,9 +76,17 @@ export const setCookie = (
   res: Response,
   cookieName: string,
   cookieValue: string
-) =>
-  res.cookie(cookieName, cookieValue, {
+) => {
+  const cookieOptions: CookieOptions = {
     maxAge: 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: 'none',
-  });
+  };
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.sameSite = 'none';
+  }
+  if (CLIENT_ORIGIN?.startsWith('https')) {
+    cookieOptions.secure = true;
+  }
+
+  res.cookie(cookieName, cookieValue, cookieOptions);
+};

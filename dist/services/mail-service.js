@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const api_error_1 = require("../exceptions/api-error");
+const constants_1 = require("../constants");
 class MailService {
     constructor() {
         this.transport = nodemailer_1.default.createTransport({
@@ -31,7 +32,7 @@ class MailService {
                     from: 'no-reply <maul-server>',
                     to,
                     subject: 'Account activation',
-                    html: `Follow this <a href="${process.env.CLIENT_URL}/email-confirmation/${identifier}">link</a> to verify your email address`,
+                    html: `Follow this <a href="${constants_1.CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address`,
                 });
             }
             catch (error) {

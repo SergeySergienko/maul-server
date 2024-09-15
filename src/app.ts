@@ -9,6 +9,7 @@ import {
   usersRouter,
 } from './routes';
 import { errorMiddleware } from './middleware';
+import { CLIENT_ORIGIN } from './constants';
 
 export const app = express();
 
@@ -19,7 +20,7 @@ app
   .use(
     cors({
       credentials: true,
-      // origin: process.env.CLIENT_URL,
+      origin: CLIENT_ORIGIN,
     })
   );
 

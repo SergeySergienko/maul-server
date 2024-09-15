@@ -56,10 +56,18 @@ const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, functi
     return Object.assign(Object.assign({}, tokens), { user });
 });
 exports.getUserWithTokens = getUserWithTokens;
-const setCookie = (res, cookieName, cookieValue) => res.cookie(cookieName, cookieValue, {
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: 'none',
-});
+const setCookie = (res, cookieName, cookieValue) => {
+    const cookieOptions = {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+    };
+    if (process.env.NODE_ENV === 'production') {
+        cookieOptions.sameSite = 'none';
+    }
+    if (constants_1.CLIENT_ORIGIN === null || constants_1.CLIENT_ORIGIN === void 0 ? void 0 : constants_1.CLIENT_ORIGIN.startsWith('https')) {
+        cookieOptions.secure = true;
+    }
+    res.cookie(cookieName, cookieValue, cookieOptions);
+};
 exports.setCookie = setCookie;
 //# sourceMappingURL=utils.js.map
