@@ -13,16 +13,19 @@ import { CLIENT_ORIGIN } from './constants';
 
 export const app = express();
 
+const corsOptions = {
+  credentials: true,
+  origin: CLIENT_ORIGIN,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 app
   .use(express.static(path.join(__dirname, 'public')))
   .use(express.json())
   .use(cookieParser())
-  .use(
-    cors({
-      credentials: true,
-      origin: CLIENT_ORIGIN,
-    })
-  );
+  .use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app
   .use('/api/auth', authRouter)
