@@ -31,7 +31,14 @@ exports.authController = {
             try {
                 const { refreshToken } = req.cookies;
                 yield services_1.authService.logout(refreshToken);
-                res.clearCookie('refreshToken');
+                const cookieOptions = {
+                    httpOnly: true,
+                };
+                if (process.env.NODE_ENV === 'production') {
+                    cookieOptions.sameSite = 'none';
+                    cookieOptions.secure = true;
+                }
+                res.clearCookie('refreshToken', cookieOptions);
                 return res.json({ message: 'User successfully logged out' });
             }
             catch (error) {

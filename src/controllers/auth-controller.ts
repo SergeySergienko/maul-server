@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, CookieOptions } from 'express';
 import { RequestWithBody, RequestWithParams } from '../types';
 import { setCookie } from '../utils';
 import { authService } from '../services';
@@ -25,7 +25,15 @@ export const authController = {
     try {
       const { refreshToken } = req.cookies;
       await authService.logout(refreshToken);
-      res.clearCookie('refreshToken');
+      const cookieOptions: CookieOptions = {
+        httpOnly: true,
+      };
+      if (process.env.NODE_ENV === 'production') {
+        cookieOptions.sameSite = 'none';
+        cookieOptions.secure = true;
+      }
+
+      res.clearCookie('refreshToken', cookieOptions);
 
       return res.json({ message: 'User successfully logged out' });
     } catch (error) {
