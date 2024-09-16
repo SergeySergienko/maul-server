@@ -10,6 +10,6 @@ exports.ALLOWED_ROLES = [
     'ADMIN',
 ];
 exports.CLIENT_ORIGIN = process.env.NODE_ENV === 'production'
-    ? process.env.CLIENT_ORIGIN_PRODUCTION || 'http://localhost:4173'
-    : process.env.CLIENT_ORIGIN_DEVELOPMENT;
+    ? process.env.CLIENT_ORIGIN_PRODUCTION || 'https://localhost:4173'
+    : 'http://localhost:5173';
 //# sourceMappingURL=constants.js.map

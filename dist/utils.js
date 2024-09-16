@@ -63,8 +63,6 @@ const setCookie = (res, cookieName, cookieValue) => {
     };
     if (process.env.NODE_ENV === 'production') {
         cookieOptions.sameSite = 'none';
-    }
-    if (constants_1.CLIENT_ORIGIN === null || constants_1.CLIENT_ORIGIN === void 0 ? void 0 : constants_1.CLIENT_ORIGIN.startsWith('https')) {
         cookieOptions.secure = true;
     }
     res.cookie(cookieName, cookieValue, cookieOptions);

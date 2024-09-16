@@ -12,5 +12,5 @@ export const ALLOWED_ROLES: Array<Exclude<keyof typeof RoleModel, 'OWNER'>> = [
 
 export const CLIENT_ORIGIN =
   process.env.NODE_ENV === 'production'
-    ? process.env.CLIENT_ORIGIN_PRODUCTION || 'http://localhost:4173'
-    : process.env.CLIENT_ORIGIN_DEVELOPMENT;
+    ? process.env.CLIENT_ORIGIN_PRODUCTION || 'https://localhost:4173'
+    : 'http://localhost:5173';

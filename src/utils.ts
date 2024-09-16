@@ -83,8 +83,6 @@ export const setCookie = (
   };
   if (process.env.NODE_ENV === 'production') {
     cookieOptions.sameSite = 'none';
-  }
-  if (CLIENT_ORIGIN?.startsWith('https')) {
     cookieOptions.secure = true;
   }
 
