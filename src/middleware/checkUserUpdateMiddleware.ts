@@ -12,16 +12,19 @@ export const checkUserUpdateMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.cookies;
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    if (!accessToken) {
+      throw ApiError.UnauthorizedError();
+    }
     const role = req.body.role as keyof typeof RoleModel;
 
-    const secret = process.env.JWT_REFRESH_SECRET;
+    const secret = process.env.JWT_ACCESS_SECRET;
     if (!secret) {
       throw ApiError.ServerError('Internal Server Error');
     }
 
     const userData = tokensService.validateToken<CustomJwtPayload>(
-      refreshToken,
+      accessToken,
       secret
     );
     if (!userData) {
@@ -34,7 +37,7 @@ export const checkUserUpdateMiddleware = async (
 
     const candidateToUpdate = await usersRepo.findUser('id', req.body.id);
     if (!candidateToUpdate) {
-      throw ApiError.BadRequest(400, 'User id is incorrect');
+      throw ApiError.BadRequest(400, 'User ID is incorrect');
     }
 
     const hasRole =

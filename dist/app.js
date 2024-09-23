@@ -12,18 +12,13 @@ const routes_1 = require("./routes");
 const middleware_1 = require("./middleware");
 const constants_1 = require("./constants");
 exports.app = (0, express_1.default)();
-const corsOptions = {
-    credentials: true,
-    origin: constants_1.CLIENT_ORIGIN,
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-};
 exports.app
     .use(express_1.default.static(path_1.default.join(__dirname, 'public')))
     .use(express_1.default.json())
     .use((0, cookie_parser_1.default)())
-    .use((0, cors_1.default)(corsOptions));
-exports.app.options('*', (0, cors_1.default)(corsOptions));
+    .use((0, cors_1.default)({
+    origin: constants_1.CLIENT_ORIGIN,
+}));
 exports.app
     .use('/api/auth', routes_1.authRouter)
     .use('/api/users', routes_1.usersRouter)

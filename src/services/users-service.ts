@@ -5,7 +5,12 @@ import { UserModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { ALLOWED_ROLES } from '../constants';
-import { QueryDTO, UserInputDTO, UserUpdateDTO } from '../types/dto-types';
+import {
+  QueryDTO,
+  UserInputDTO,
+  UserOutputDTO,
+  UserUpdateDTO,
+} from '../types/dto-types';
 import mailService from './mail-service';
 
 export const usersService = {
@@ -50,7 +55,12 @@ export const usersService = {
 
     await mailService.sendActivationMail(email, identifier);
 
-    return userModelMapper({ ...newUser, _id: insertedId });
+    const user = userModelMapper({
+      ...newUser,
+      _id: insertedId,
+    });
+
+    return { ...user, activationToken: identifier };
   },
 
   async updateUser(userDataToUpdate: UserUpdateDTO) {

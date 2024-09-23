@@ -15,19 +15,23 @@ const models_1 = require("../models");
 const services_1 = require("../services");
 const repositories_1 = require("../repositories");
 const checkUserDeleteMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const { refreshToken } = req.cookies;
-        const secret = process.env.JWT_REFRESH_SECRET;
+        const accessToken = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+        if (!accessToken) {
+            throw api_error_1.ApiError.UnauthorizedError();
+        }
+        const secret = process.env.JWT_ACCESS_SECRET;
         if (!secret) {
             throw api_error_1.ApiError.ServerError('Internal Server Error');
         }
-        const userData = services_1.tokensService.validateToken(refreshToken, secret);
+        const userData = services_1.tokensService.validateToken(accessToken, secret);
         if (!userData) {
             throw api_error_1.ApiError.UnauthorizedError();
         }
         const candidateToDelete = yield repositories_1.usersRepo.findUser('id', req.params.id);
         if (!candidateToDelete) {
-            throw api_error_1.ApiError.BadRequest(400, 'User id is incorrect');
+            throw api_error_1.ApiError.BadRequest(400, 'User ID is incorrect');
         }
         if (userData.id === candidateToDelete._id.toString()) {
             throw api_error_1.ApiError.ForbiddenError('User is not allowed to delete themselves');

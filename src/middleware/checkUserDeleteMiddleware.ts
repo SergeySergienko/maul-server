@@ -12,15 +12,18 @@ export const checkUserDeleteMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const { refreshToken } = req.cookies;
+    const accessToken = req.headers.authorization?.split(' ')[1];
+    if (!accessToken) {
+      throw ApiError.UnauthorizedError();
+    }
 
-    const secret = process.env.JWT_REFRESH_SECRET;
+    const secret = process.env.JWT_ACCESS_SECRET;
     if (!secret) {
       throw ApiError.ServerError('Internal Server Error');
     }
 
     const userData = tokensService.validateToken<CustomJwtPayload>(
-      refreshToken,
+      accessToken,
       secret
     );
     if (!userData) {
@@ -29,7 +32,7 @@ export const checkUserDeleteMiddleware = async (
 
     const candidateToDelete = await usersRepo.findUser('id', req.params.id);
     if (!candidateToDelete) {
-      throw ApiError.BadRequest(400, 'User id is incorrect');
+      throw ApiError.BadRequest(400, 'User ID is incorrect');
     }
 
     if (userData.id === candidateToDelete._id.toString()) {

@@ -1,4 +1,3 @@
-import { CookieOptions, Response } from 'express';
 import { WithId } from 'mongodb';
 import path from 'path';
 import sharp from 'sharp';
@@ -70,21 +69,4 @@ export const getUserWithTokens = async (userData: WithId<UserModel>) => {
     ...tokens,
     user,
   };
-};
-
-export const setCookie = (
-  res: Response,
-  cookieName: string,
-  cookieValue: string
-) => {
-  const cookieOptions: CookieOptions = {
-    maxAge: 24 * 60 * 60 * 1000,
-    httpOnly: true,
-  };
-  if (process.env.NODE_ENV === 'production') {
-    cookieOptions.sameSite = 'none';
-    cookieOptions.secure = true;
-  }
-
-  res.cookie(cookieName, cookieValue, cookieOptions);
 };

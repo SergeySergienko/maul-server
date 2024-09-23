@@ -10,10 +10,6 @@ const authMiddleware = (role) => (req, res, next) => {
         next();
     }
     try {
-        const { refreshToken } = req.cookies;
-        if (!refreshToken) {
-            throw api_error_1.ApiError.UnauthorizedError();
-        }
         const accessToken = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         if (!accessToken) {
             throw api_error_1.ApiError.UnauthorizedError();

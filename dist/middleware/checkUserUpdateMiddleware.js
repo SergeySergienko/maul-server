@@ -15,14 +15,18 @@ const models_1 = require("../models");
 const services_1 = require("../services");
 const repositories_1 = require("../repositories");
 const checkUserUpdateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const { refreshToken } = req.cookies;
+        const accessToken = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+        if (!accessToken) {
+            throw api_error_1.ApiError.UnauthorizedError();
+        }
         const role = req.body.role;
-        const secret = process.env.JWT_REFRESH_SECRET;
+        const secret = process.env.JWT_ACCESS_SECRET;
         if (!secret) {
             throw api_error_1.ApiError.ServerError('Internal Server Error');
         }
-        const userData = services_1.tokensService.validateToken(refreshToken, secret);
+        const userData = services_1.tokensService.validateToken(accessToken, secret);
         if (!userData) {
             throw api_error_1.ApiError.UnauthorizedError();
         }
@@ -31,7 +35,7 @@ const checkUserUpdateMiddleware = (req, res, next) => __awaiter(void 0, void 0, 
         }
         const candidateToUpdate = yield repositories_1.usersRepo.findUser('id', req.body.id);
         if (!candidateToUpdate) {
-            throw api_error_1.ApiError.BadRequest(400, 'User id is incorrect');
+            throw api_error_1.ApiError.BadRequest(400, 'User ID is incorrect');
         }
         const hasRole = models_1.RoleModel[userData.role] > models_1.RoleModel[role] &&
             models_1.RoleModel[userData.role] > models_1.RoleModel[candidateToUpdate.role];

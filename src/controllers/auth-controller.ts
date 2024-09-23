@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction, CookieOptions } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { RequestWithBody, RequestWithParams } from '../types';
-import { setCookie } from '../utils';
 import { authService } from '../services';
 import { UserInputDTO } from '../types/dto-types';
 
@@ -13,7 +12,6 @@ export const authController = {
     try {
       const { email, password } = req.body;
       const userData = await authService.login({ email, password });
-      setCookie(res, 'refreshToken', userData.refreshToken);
 
       return res.json(userData);
     } catch (error) {
@@ -23,17 +21,8 @@ export const authController = {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      const { refreshToken } = req.cookies;
+      const refreshToken = req.headers['x-refresh-token'] as string;
       await authService.logout(refreshToken);
-      const cookieOptions: CookieOptions = {
-        httpOnly: true,
-      };
-      if (process.env.NODE_ENV === 'production') {
-        cookieOptions.sameSite = 'none';
-        cookieOptions.secure = true;
-      }
-
-      res.clearCookie('refreshToken', cookieOptions);
 
       return res.json({ message: 'User successfully logged out' });
     } catch (error) {
@@ -50,7 +39,6 @@ export const authController = {
       const userData = await authService.activateUser(
         req.params.activationToken
       );
-      setCookie(res, 'refreshToken', userData.refreshToken);
 
       return res.json(userData);
     } catch (error) {
@@ -60,9 +48,8 @@ export const authController = {
 
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
-      const { refreshToken } = req.cookies;
+      const refreshToken = req.headers['x-refresh-token'] as string;
       const userData = await authService.refresh(refreshToken);
-      setCookie(res, 'refreshToken', userData.refreshToken);
 
       return res.json(userData);
     } catch (error) {

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setCookie = exports.getUserWithTokens = exports.userModelMapper = exports.normalizeImage = exports.isDateValid = void 0;
+exports.getUserWithTokens = exports.userModelMapper = exports.normalizeImage = exports.isDateValid = void 0;
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const constants_1 = require("./constants");
@@ -56,16 +56,4 @@ const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, functi
     return Object.assign(Object.assign({}, tokens), { user });
 });
 exports.getUserWithTokens = getUserWithTokens;
-const setCookie = (res, cookieName, cookieValue) => {
-    const cookieOptions = {
-        maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: true,
-    };
-    if (process.env.NODE_ENV === 'production') {
-        cookieOptions.sameSite = 'none';
-        cookieOptions.secure = true;
-    }
-    res.cookie(cookieName, cookieValue, cookieOptions);
-};
-exports.setCookie = setCookie;
 //# sourceMappingURL=utils.js.map

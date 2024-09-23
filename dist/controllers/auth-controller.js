@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
-const utils_1 = require("../utils");
 const services_1 = require("../services");
 exports.authController = {
     login(req, res, next) {
@@ -18,7 +17,6 @@ exports.authController = {
             try {
                 const { email, password } = req.body;
                 const userData = yield services_1.authService.login({ email, password });
-                (0, utils_1.setCookie)(res, 'refreshToken', userData.refreshToken);
                 return res.json(userData);
             }
             catch (error) {
@@ -29,16 +27,8 @@ exports.authController = {
     logout(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { refreshToken } = req.cookies;
+                const refreshToken = req.headers['x-refresh-token'];
                 yield services_1.authService.logout(refreshToken);
-                const cookieOptions = {
-                    httpOnly: true,
-                };
-                if (process.env.NODE_ENV === 'production') {
-                    cookieOptions.sameSite = 'none';
-                    cookieOptions.secure = true;
-                }
-                res.clearCookie('refreshToken', cookieOptions);
                 return res.json({ message: 'User successfully logged out' });
             }
             catch (error) {
@@ -50,7 +40,6 @@ exports.authController = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const userData = yield services_1.authService.activateUser(req.params.activationToken);
-                (0, utils_1.setCookie)(res, 'refreshToken', userData.refreshToken);
                 return res.json(userData);
             }
             catch (error) {
@@ -61,9 +50,8 @@ exports.authController = {
     refresh(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { refreshToken } = req.cookies;
+                const refreshToken = req.headers['x-refresh-token'];
                 const userData = yield services_1.authService.refresh(refreshToken);
-                (0, utils_1.setCookie)(res, 'refreshToken', userData.refreshToken);
                 return res.json(userData);
             }
             catch (error) {
