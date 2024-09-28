@@ -30,7 +30,7 @@ exports.eventsService = {
                     },
                 ]);
             }
-            return event;
+            return (0, utils_1.eventModelMapper)(event);
         });
     },
     findEvents(_a) {
@@ -42,16 +42,16 @@ exports.eventsService = {
             if (!events) {
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
             }
-            return events;
+            return events.map(utils_1.eventModelMapper);
         });
     },
     createEvent(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ date, title, description, location, teamPlace, files, coverPhoto, }) {
-            if (!files) {
+        return __awaiter(this, arguments, void 0, function* ({ date, title, description, location, teamPlace, photos: photoFiles, coverPhoto, }) {
+            if (!photoFiles) {
                 throw api_error_1.ApiError.BadRequest(400, 'Photos are required', [
                     {
                         type: 'field',
-                        value: files || 'undefined',
+                        value: photoFiles || 'undefined',
                         msg: 'photos are required',
                         path: 'upload',
                         location: 'body',
@@ -86,7 +86,7 @@ exports.eventsService = {
                 throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
             }
             const photos = [];
-            for (const file of files) {
+            for (const file of photoFiles) {
                 const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
                 photos.push(blobFile.url);
             }
@@ -99,10 +99,10 @@ exports.eventsService = {
                 photos,
                 coverPhoto,
             };
-            const result = yield repositories_1.eventsRepo.createEvent(newEvent);
-            if (!result.insertedId)
+            const { insertedId } = yield repositories_1.eventsRepo.createEvent(Object.assign({}, newEvent));
+            if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
-            return Object.assign(Object.assign({}, newEvent), { _id: result.insertedId });
+            return Object.assign({ id: insertedId.toString() }, newEvent);
         });
     },
 };

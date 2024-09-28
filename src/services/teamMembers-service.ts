@@ -4,7 +4,7 @@ import { teamMembersRepo } from '../repositories';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage } from '../utils';
-import { PostTeamMemberDTO, QueryDTO } from '../types/dto-types';
+import { PostTeamMemberDTO, QueryDTO } from '../types';
 
 export const teamMembersService = {
   async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {

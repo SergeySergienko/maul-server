@@ -1,10 +1,10 @@
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { EventModel } from '../models';
 import { eventsRepo } from '../repositories';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
-import { isDateValid } from '../utils';
-import { PostEventDTO, QueryDTO } from '../types/dto-types';
+import { eventModelMapper, isDateValid } from '../utils';
+import { EventOutputDTO, EventInputDTO, QueryDTO } from '../types';
 
 export const eventsService = {
   async findEvent(id: string) {
@@ -20,7 +20,7 @@ export const eventsService = {
         },
       ]);
     }
-    return event;
+    return eventModelMapper(event);
   },
 
   async findEvents({ limit, sort }: QueryDTO) {
@@ -32,7 +32,7 @@ export const eventsService = {
     if (!events) {
       throw ApiError.ServerError('Internal Server Error');
     }
-    return events;
+    return events.map(eventModelMapper);
   },
 
   async createEvent({
@@ -41,14 +41,14 @@ export const eventsService = {
     description,
     location,
     teamPlace,
-    files,
+    photos: photoFiles,
     coverPhoto,
-  }: PostEventDTO): Promise<WithId<EventModel>> {
-    if (!files) {
+  }: EventInputDTO): Promise<EventOutputDTO> {
+    if (!photoFiles) {
       throw ApiError.BadRequest(400, 'Photos are required', [
         {
           type: 'field',
-          value: files || 'undefined',
+          value: photoFiles || 'undefined',
           msg: 'photos are required',
           path: 'upload',
           location: 'body',
@@ -89,7 +89,7 @@ export const eventsService = {
     }
 
     const photos: string[] = [];
-    for (const file of files) {
+    for (const file of photoFiles) {
       const blobFile = await storageService.writeFileToAzureStorage(
         `${containerName}/${date}`,
         file.originalname,
@@ -107,9 +107,9 @@ export const eventsService = {
       photos,
       coverPhoto,
     };
-    const result = await eventsRepo.createEvent(newEvent);
-    if (!result.insertedId) throw ApiError.ServerError('Internal Server Error');
+    const { insertedId } = await eventsRepo.createEvent({ ...newEvent });
+    if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
-    return { ...newEvent, _id: result.insertedId };
+    return { id: insertedId.toString(), ...newEvent };
   },
 };

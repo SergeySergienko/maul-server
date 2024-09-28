@@ -7,7 +7,7 @@ import {
   UserInputDTO,
   UserOutputDTO,
   UserUpdateDTO,
-} from '../types/dto-types';
+} from '../types';
 
 export const usersController = {
   async findUsers(

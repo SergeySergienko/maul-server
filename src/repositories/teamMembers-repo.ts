@@ -1,7 +1,7 @@
 import { FindOptions, WithId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
-import { QueryDTO } from '../types/dto-types';
+import { QueryDTO } from '../types';
 
 export const teamMembersRepo = {
   async findTeamMember<T extends keyof WithId<TeamMemberModel>>(

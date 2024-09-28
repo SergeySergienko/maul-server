@@ -2,15 +2,10 @@ import { WithId } from 'mongodb';
 import path from 'path';
 import sharp from 'sharp';
 import { NormalizedImageResult } from './types';
-import {
-  ALLOWED_EXTENSIONS,
-  CLIENT_ORIGIN,
-  IMAGE_HEIGHT,
-  IMAGE_WIDTH,
-} from './constants';
-import { UserModel } from './models';
+import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
+import { EventModel, UserModel } from './models';
 import { tokensService } from './services';
-import { UserOutputDTO } from './types/dto-types';
+import { EventOutputDTO, UserOutputDTO } from './types';
 
 export const isDateValid = (date: string) => {
   const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -56,6 +51,11 @@ export const userModelMapper = ({
   createdAt,
   updatedAt,
 });
+
+export const eventModelMapper = (event: WithId<EventModel>): EventOutputDTO => {
+  const { _id, ...rest } = event;
+  return { id: _id.toString(), ...rest };
+};
 
 export const getUserWithTokens = async (userData: WithId<UserModel>) => {
   const user = userModelMapper(userData);

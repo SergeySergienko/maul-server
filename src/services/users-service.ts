@@ -5,12 +5,7 @@ import { UserModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { ALLOWED_ROLES } from '../constants';
-import {
-  QueryDTO,
-  UserInputDTO,
-  UserOutputDTO,
-  UserUpdateDTO,
-} from '../types/dto-types';
+import { QueryDTO, UserInputDTO, UserUpdateDTO } from '../types';
 import mailService from './mail-service';
 
 export const usersService = {

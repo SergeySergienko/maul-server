@@ -3,7 +3,7 @@ import { ApiError } from '../exceptions/api-error';
 import { TokenModel } from '../models';
 import { tokensRepo } from '../repositories';
 import { accessTokenExpiryTime, refreshTokenExpiryTime } from './constants';
-import { UserOutputDTO } from '../types/dto-types';
+import { UserOutputDTO } from '../types';
 
 export const tokensService = {
   generateTokens(payload: UserOutputDTO) {

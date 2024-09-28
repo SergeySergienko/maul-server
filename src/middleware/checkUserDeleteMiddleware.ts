@@ -4,7 +4,7 @@ import { CustomJwtPayload, RoleModel } from '../models';
 import { RequestWithParams } from '../types';
 import { tokensService } from '../services';
 import { usersRepo } from '../repositories';
-import { IdParamsDTO } from '../types/dto-types';
+import { IdParamsDTO } from '../types';
 
 export const checkUserDeleteMiddleware = async (
   req: RequestWithParams<IdParamsDTO>,

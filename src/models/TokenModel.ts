@@ -1,5 +1,5 @@
 import { JwtPayload } from 'jsonwebtoken';
-import { UserOutputDTO } from '../types/dto-types';
+import { UserOutputDTO } from '../types';
 
 export interface TokenModel {
   userId: string;

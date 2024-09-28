@@ -9,10 +9,10 @@ export const userCollection = client
   .collection<UserModel>('users');
 export const teamMemberCollection = client
   .db('maul_db')
-  .collection<TeamMemberModel>('teamMembers');
+  .collection<TeamMemberModel>('meigaMembers');
 export const eventCollection = client
   .db('maul_db')
-  .collection<EventModel>('events');
+  .collection<EventModel>('meigaEvents');
 export const tokenCollection = client
   .db('maul_db')
   .collection<TokenModel>('tokens');

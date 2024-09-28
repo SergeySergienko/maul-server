@@ -1,7 +1,7 @@
 import { FindOptions, WithId } from 'mongodb';
 import { eventCollection } from '.';
 import { EventModel } from '../models';
-import { QueryDTO } from '../types/dto-types';
+import { QueryDTO } from '../types';
 
 export const eventsRepo = {
   async findEvent<T extends keyof WithId<EventModel>>(
@@ -17,7 +17,7 @@ export const eventsRepo = {
     if (limit) {
       options.limit = +limit;
     }
-    options.sort = { date: sort || 'asc' };
+    options.sort = { date: sort || 'desc' };
 
     return await eventCollection.find({}, options).toArray();
   },

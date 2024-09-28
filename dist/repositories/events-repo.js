@@ -23,7 +23,7 @@ exports.eventsRepo = {
             if (limit) {
                 options.limit = +limit;
             }
-            options.sort = { date: sort || 'asc' };
+            options.sort = { date: sort || 'desc' };
             return yield _1.eventCollection.find({}, options).toArray();
         });
     },

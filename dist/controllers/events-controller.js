@@ -42,14 +42,14 @@ exports.eventsController = {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { date, title, description, location, teamPlace, coverPhoto } = req.body;
-                const files = req.files;
+                const photos = req.files;
                 const event = yield services_1.eventsService.createEvent({
                     date,
                     title,
                     description,
                     location,
                     teamPlace,
-                    files,
+                    photos,
                     coverPhoto,
                 });
                 return res.status(201).json(event);

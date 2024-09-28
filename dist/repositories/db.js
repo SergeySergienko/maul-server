@@ -19,10 +19,10 @@ exports.userCollection = client
     .collection('users');
 exports.teamMemberCollection = client
     .db('maul_db')
-    .collection('teamMembers');
+    .collection('meigaMembers');
 exports.eventCollection = client
     .db('maul_db')
-    .collection('events');
+    .collection('meigaEvents');
 exports.tokenCollection = client
     .db('maul_db')
     .collection('tokens');

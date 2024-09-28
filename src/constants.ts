@@ -4,6 +4,8 @@ export const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 export const IMAGE_WIDTH = 192;
 export const IMAGE_HEIGHT = 288;
 
+export const PHOTO_ARRAY_LIMIT = 20;
+
 export const ALLOWED_ROLES: Array<Exclude<keyof typeof RoleModel, 'OWNER'>> = [
   'USER',
   'MEMBER',

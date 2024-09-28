@@ -3,7 +3,7 @@ import { WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersService } from '../services';
 import { RequestWithBody, RequestWithQuery, RequestWithParams } from '../types';
-import { IdParamsDTO, PostTeamMemberDTO, QueryDTO } from '../types/dto-types';
+import { IdParamsDTO, PostTeamMemberDTO, QueryDTO } from '../types';
 
 export const teamMembersController = {
   async findTeamMember(

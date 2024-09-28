@@ -1,14 +1,19 @@
 import { Response, NextFunction } from 'express';
-import { WithId } from 'mongodb';
-import { EventModel } from '../models';
 import { eventsService } from '../services';
-import { RequestWithBody, RequestWithQuery, RequestWithParams } from '../types';
-import { IdParamsDTO, PostEventDTO, QueryDTO } from '../types/dto-types';
+import {
+  RequestWithBody,
+  RequestWithQuery,
+  RequestWithParams,
+  EventOutputDTO,
+  IdParamsDTO,
+  EventInputDTO,
+  QueryDTO,
+} from '../types';
 
 export const eventsController = {
   async findEvent(
     req: RequestWithParams<IdParamsDTO>,
-    res: Response<WithId<EventModel>>,
+    res: Response<EventOutputDTO>,
     next: NextFunction
   ) {
     try {
@@ -21,7 +26,7 @@ export const eventsController = {
 
   async findEvents(
     req: RequestWithQuery<QueryDTO>,
-    res: Response<WithId<EventModel>[]>,
+    res: Response<EventOutputDTO[]>,
     next: NextFunction
   ) {
     const { limit, sort } = req.query;
@@ -37,21 +42,22 @@ export const eventsController = {
   },
 
   async createEvent(
-    req: RequestWithBody<PostEventDTO>,
-    res: Response<WithId<EventModel>>,
+    req: RequestWithBody<EventInputDTO>,
+    res: Response<EventOutputDTO>,
     next: NextFunction
   ) {
     try {
       const { date, title, description, location, teamPlace, coverPhoto } =
         req.body;
-      const files = req.files as Express.Multer.File[];
+
+      const photos = req.files as Express.Multer.File[];
       const event = await eventsService.createEvent({
         date,
         title,
         description,
         location,
         teamPlace,
-        files,
+        photos,
         coverPhoto,
       });
       return res.status(201).json(event);

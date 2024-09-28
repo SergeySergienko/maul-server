@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { RequestWithBody, RequestWithParams } from '../types';
 import { authService } from '../services';
-import { UserInputDTO } from '../types/dto-types';
+import { UserInputDTO } from '../types';
 
 export const authController = {
   async login(

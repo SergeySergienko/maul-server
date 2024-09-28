@@ -1,7 +1,7 @@
 import { FindOptions, ObjectId } from 'mongodb';
 import { userCollection } from '.';
 import { UserModel } from '../models';
-import { QueryDTO, UserFindDTO, UserUpdateDTO } from '../types/dto-types';
+import { QueryDTO, UserFindDTO, UserUpdateDTO } from '../types';
 
 export const usersRepo = {
   async findUser<T extends keyof UserFindDTO>(field: T, value: UserFindDTO[T]) {

@@ -4,7 +4,7 @@ import { CustomJwtPayload, RoleModel } from '../models';
 import { RequestWithBody } from '../types';
 import { tokensService } from '../services';
 import { usersRepo } from '../repositories';
-import { UserUpdateDTO } from '../types/dto-types';
+import { UserUpdateDTO } from '../types';
 
 export const checkUserUpdateMiddleware = async (
   req: RequestWithBody<UserUpdateDTO>,

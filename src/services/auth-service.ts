@@ -4,7 +4,7 @@ import { CustomJwtPayload } from '../models';
 import { tokensRepo, usersRepo } from '../repositories';
 import { getUserWithTokens } from '../utils';
 import { tokensService } from '.';
-import { UserInputDTO } from '../types/dto-types';
+import { UserInputDTO } from '../types';
 
 export const authService = {
   async login({ email, password }: UserInputDTO) {
