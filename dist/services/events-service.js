@@ -15,6 +15,7 @@ const repositories_1 = require("../repositories");
 const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
 const utils_1 = require("../utils");
+const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
 exports.eventsService = {
     findEvent(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -81,7 +82,6 @@ exports.eventsService = {
                     },
                 ]);
             }
-            const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
             if (!containerName) {
                 throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
             }
@@ -103,6 +103,22 @@ exports.eventsService = {
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
             return Object.assign({ id: insertedId.toString() }, newEvent);
+        });
+    },
+    deleteEvent(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const eventToDelete = yield this.findEvent(id);
+            for (const photo of eventToDelete.photos) {
+                const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
+                if (res.errorCode) {
+                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                }
+            }
+            const { deletedCount } = yield repositories_1.eventsRepo.deleteEvent(id);
+            if (deletedCount !== 1) {
+                throw api_error_1.ApiError.NotFound(`Event with id: ${id} wasn't found`);
+            }
+            return id;
         });
     },
 };

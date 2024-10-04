@@ -65,4 +65,17 @@ export const eventsController = {
       next(error);
     }
   },
+
+  async deleteEvent(
+    req: RequestWithParams<IdParamsDTO>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const id = await eventsService.deleteEvent(req.params.id);
+      return res.json({ id, message: 'Event was deleted successfully' });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

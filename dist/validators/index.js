@@ -25,6 +25,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_validator_1 = require("express-validator");
 __exportStar(require("./rules"), exports);
+__exportStar(require("./events-validators"), exports);
 __exportStar(require("./teamMembers-validators"), exports);
 __exportStar(require("./users-validators"), exports);
 const validateRequest = (validators) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {

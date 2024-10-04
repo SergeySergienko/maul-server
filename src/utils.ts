@@ -38,6 +38,26 @@ export const normalizeImage = async (
   };
 };
 
+export const parseBlobUrl = (url: string) => {
+  const parsedUrl = new URL(url);
+
+  const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+
+  // Get the path without leading slash and decode special characters
+  const fullPath = decodeURIComponent(parsedUrl.pathname.substring(1));
+
+  // Split the full path into container name and blob name
+  const lastSlashIndex = fullPath.lastIndexOf('/');
+  const containerName = fullPath.substring(0, lastSlashIndex);
+  const blobName = fullPath.substring(lastSlashIndex + 1);
+
+  return {
+    baseUrl,
+    containerName,
+    blobName,
+  };
+};
+
 export const userModelMapper = ({
   _id,
   email,

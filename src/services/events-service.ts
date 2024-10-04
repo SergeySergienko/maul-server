@@ -6,6 +6,8 @@ import { ApiError } from '../exceptions/api-error';
 import { eventModelMapper, isDateValid } from '../utils';
 import { EventOutputDTO, EventInputDTO, QueryDTO } from '../types';
 
+const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
+
 export const eventsService = {
   async findEvent(id: string) {
     const event = await eventsRepo.findEvent('_id', new ObjectId(id));
@@ -83,7 +85,6 @@ export const eventsService = {
         },
       ]);
     }
-    const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
     if (!containerName) {
       throw ApiError.BadRequest(400, 'Storage container name is required');
     }
@@ -111,5 +112,23 @@ export const eventsService = {
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
     return { id: insertedId.toString(), ...newEvent };
+  },
+
+  async deleteEvent(id: string) {
+    const eventToDelete = await this.findEvent(id);
+    for (const photo of eventToDelete.photos) {
+      const res = await storageService.deleteFileFromAzureStorage(photo);
+
+      if (res.errorCode) {
+        throw ApiError.ServerError('Can not delete blob file');
+      }
+    }
+
+    const { deletedCount } = await eventsRepo.deleteEvent(id);
+    if (deletedCount !== 1) {
+      throw ApiError.NotFound(`Event with id: ${id} wasn't found`);
+    }
+
+    return id;
   },
 };

@@ -37,6 +37,7 @@ export const bodyPasswordRule = body(
   .trim()
   .isLength({ min: 4, max: 10 });
 
+// team-member rules
 export const bodyNameRule = body('name')
   .trim()
   .notEmpty()
@@ -47,9 +48,43 @@ export const bodyPositionRule = body('position')
   .notEmpty()
   .withMessage('position is required');
 
-export const uploadRule = check('upload').custom((value, { req }) => {
+export const uploadFileRule = check('upload').custom((value, { req }) => {
   if (!req.file) {
     throw new Error('file is required');
   }
   return true;
 });
+
+// event rules
+export const bodyDateRule = body('date')
+  .trim()
+  .isDate()
+  .withMessage('date must have date format');
+
+export const bodyTitleRule = body('title')
+  .trim()
+  .isLength({ min: 3 })
+  .withMessage('the title must contain min 3 characters');
+
+export const bodyDescriptionRule = body('description')
+  .trim()
+  .isLength({ min: 20 })
+  .withMessage('the description must contain min 20 characters');
+
+export const bodyLocationRule = body('location')
+  .trim()
+  .isLength({ min: 3 })
+  .withMessage('the location must contain min 3 characters');
+
+export const uploadFilesRule = check('upload').custom((value, { req }) => {
+  if (!req.files) {
+    throw new Error('files are required');
+  }
+  return true;
+});
+
+export const teamPlaceRule = body('teamPlace')
+  .optional()
+  .isNumeric()
+  .isByteLength({ gt: 0 })
+  .withMessage('the teamPlace must be a number more then 0');

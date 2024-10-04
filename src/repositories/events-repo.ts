@@ -1,4 +1,4 @@
-import { FindOptions, WithId } from 'mongodb';
+import { FindOptions, ObjectId, WithId } from 'mongodb';
 import { eventCollection } from '.';
 import { EventModel } from '../models';
 import { QueryDTO } from '../types';
@@ -24,5 +24,9 @@ export const eventsRepo = {
 
   async createEvent(event: EventModel) {
     return await eventCollection.insertOne(event);
+  },
+
+  async deleteEvent(id: string) {
+    return await eventCollection.deleteOne({ _id: new ObjectId(id) });
   },
 };

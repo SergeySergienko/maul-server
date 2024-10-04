@@ -2,6 +2,7 @@ import { Response, NextFunction } from 'express';
 import { ValidationChain, validationResult } from 'express-validator';
 import { UniversalRequest } from '../types';
 export * from './rules';
+export * from './events-validators';
 export * from './teamMembers-validators';
 export * from './users-validators';
 

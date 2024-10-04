@@ -59,5 +59,16 @@ exports.eventsController = {
             }
         });
     },
+    deleteEvent(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = yield services_1.eventsService.deleteEvent(req.params.id);
+                return res.json({ id, message: 'Event was deleted successfully' });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    },
 };
 //# sourceMappingURL=events-controller.js.map

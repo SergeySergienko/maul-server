@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eventsRepo = void 0;
+const mongodb_1 = require("mongodb");
 const _1 = require(".");
 exports.eventsRepo = {
     findEvent(field, value) {
@@ -30,6 +31,11 @@ exports.eventsRepo = {
     createEvent(event) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield _1.eventCollection.insertOne(event);
+        });
+    },
+    deleteEvent(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield _1.eventCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
         });
     },
 };

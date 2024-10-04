@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserWithTokens = exports.eventModelMapper = exports.userModelMapper = exports.normalizeImage = exports.isDateValid = void 0;
+exports.getUserWithTokens = exports.eventModelMapper = exports.userModelMapper = exports.parseBlobUrl = exports.normalizeImage = exports.isDateValid = void 0;
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const constants_1 = require("./constants");
@@ -49,6 +49,22 @@ const normalizeImage = (file) => __awaiter(void 0, void 0, void 0, function* () 
     };
 });
 exports.normalizeImage = normalizeImage;
+const parseBlobUrl = (url) => {
+    const parsedUrl = new URL(url);
+    const baseUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+    // Get the path without leading slash and decode special characters
+    const fullPath = decodeURIComponent(parsedUrl.pathname.substring(1));
+    // Split the full path into container name and blob name
+    const lastSlashIndex = fullPath.lastIndexOf('/');
+    const containerName = fullPath.substring(0, lastSlashIndex);
+    const blobName = fullPath.substring(lastSlashIndex + 1);
+    return {
+        baseUrl,
+        containerName,
+        blobName,
+    };
+};
+exports.parseBlobUrl = parseBlobUrl;
 const userModelMapper = ({ _id, email, role, createdAt, updatedAt, }) => ({
     id: _id.toString(),
     email,

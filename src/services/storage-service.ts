@@ -1,5 +1,8 @@
 import { BlockBlobClient } from '@azure/storage-blob';
 import { ApiError } from '../exceptions/api-error';
+import { parseBlobUrl } from '../utils';
+
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
 export const storageService = {
   async writeFileToAzureStorage(
@@ -7,8 +10,6 @@ export const storageService = {
     fileName: string,
     fileBuffer: Buffer
   ) {
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-
     if (!connectionString) {
       throw ApiError.ServerError('Storage connection string is required');
     }
@@ -22,5 +23,22 @@ export const storageService = {
     await blobFile.uploadData(fileBuffer);
 
     return blobFile;
+  },
+
+  async deleteFileFromAzureStorage(photoUrl: string) {
+    if (!connectionString) {
+      throw ApiError.ServerError('Storage connection string is required');
+    }
+
+    const { containerName, blobName } = parseBlobUrl(photoUrl);
+
+    const blobFile = new BlockBlobClient(
+      connectionString,
+      containerName,
+      blobName
+    );
+    const response = await blobFile.delete({ deleteSnapshots: 'include' });
+
+    return response;
   },
 };
