@@ -1,6 +1,7 @@
 import {
   bodyDateRule,
   bodyDescriptionRule,
+  bodyIdRule,
   bodyLocationRule,
   bodyTitleRule,
   limitRule,
@@ -20,6 +21,13 @@ export const eventsValidators = {
     bodyLocationRule,
     teamPlaceRule,
     uploadFilesRule,
+  ],
+  'PUT /api/events/': [
+    bodyIdRule,
+    bodyTitleRule,
+    bodyDescriptionRule,
+    bodyLocationRule,
+    teamPlaceRule,
   ],
   'DELETE /api/events/:id': [paramIdRule],
 };

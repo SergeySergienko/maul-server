@@ -32,5 +32,5 @@ export type EventUpdateDTO = {
 };
 
 export type EventUpdateBdDTO = Omit<EventUpdateDTO, 'photos'> & {
-  photos: string[];
+  photos?: string[];
 };

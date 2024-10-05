@@ -89,35 +89,38 @@ export const eventsService = {
     teamPlace,
     coverPhoto,
   }: EventUpdateDTO): Promise<EventOutputDTO> {
-    const event = await this.findEvent(id);
-
-    for (const photo of event.photos) {
-      const res = await storageService.deleteFileFromAzureStorage(photo);
-      if (res.errorCode) {
-        throw ApiError.ServerError('Can not delete blob file');
-      }
-    }
-
-    const photos: string[] = [];
-    const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
-    for (const file of photoFiles) {
-      const blobFile = await storageService.writeFileToAzureStorage(
-        `${containerName}/${date}`,
-        file.originalname,
-        file.buffer
-      );
-      photos.push(blobFile.url);
-    }
-
     const eventToUpdate: EventUpdateBdDTO = {
       id,
       title,
       description,
       location,
-      photos,
       teamPlace,
       coverPhoto,
     };
+
+    if (photoFiles.length) {
+      const event = await this.findEvent(id);
+
+      for (const photo of event.photos) {
+        const res = await storageService.deleteFileFromAzureStorage(photo);
+        if (res.errorCode) {
+          throw ApiError.ServerError('Can not delete blob file');
+        }
+      }
+
+      const photos: string[] = [];
+      const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
+      for (const file of photoFiles) {
+        const blobFile = await storageService.writeFileToAzureStorage(
+          `${containerName}/${date}`,
+          file.originalname,
+          file.buffer
+        );
+        photos.push(blobFile.url);
+      }
+
+      eventToUpdate.photos = photos;
+    }
 
     const updatedEvent = await eventsRepo.updateEvent(eventToUpdate);
     if (!updatedEvent) {

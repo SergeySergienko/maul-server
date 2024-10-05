@@ -72,28 +72,30 @@ exports.eventsService = {
     },
     updateEvent(_a) {
         return __awaiter(this, arguments, void 0, function* ({ id, title, description, location, photos: photoFiles, teamPlace, coverPhoto, }) {
-            const event = yield this.findEvent(id);
-            for (const photo of event.photos) {
-                const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
-                if (res.errorCode) {
-                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
-                }
-            }
-            const photos = [];
-            const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
-            for (const file of photoFiles) {
-                const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
-                photos.push(blobFile.url);
-            }
             const eventToUpdate = {
                 id,
                 title,
                 description,
                 location,
-                photos,
                 teamPlace,
                 coverPhoto,
             };
+            if (photoFiles.length) {
+                const event = yield this.findEvent(id);
+                for (const photo of event.photos) {
+                    const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
+                    if (res.errorCode) {
+                        throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                    }
+                }
+                const photos = [];
+                const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
+                for (const file of photoFiles) {
+                    const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
+                    photos.push(blobFile.url);
+                }
+                eventToUpdate.photos = photos;
+            }
             const updatedEvent = yield repositories_1.eventsRepo.updateEvent(eventToUpdate);
             if (!updatedEvent) {
                 throw api_error_1.ApiError.NotFound(`Event with id: ${id} wasn't found`);
