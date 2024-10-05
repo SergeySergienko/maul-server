@@ -4,7 +4,13 @@ import { eventsRepo } from '../repositories';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { eventModelMapper, isDateValid } from '../utils';
-import { EventOutputDTO, EventInputDTO, QueryDTO } from '../types';
+import {
+  EventInputDTO,
+  EventOutputDTO,
+  EventUpdateDTO,
+  EventUpdateBdDTO,
+  QueryDTO,
+} from '../types';
 
 const containerName = process.env.AZURE_STORAGE_EVENTS_CONTAINER_NAME;
 
@@ -46,48 +52,7 @@ export const eventsService = {
     photos: photoFiles,
     coverPhoto,
   }: EventInputDTO): Promise<EventOutputDTO> {
-    if (!photoFiles) {
-      throw ApiError.BadRequest(400, 'Photos are required', [
-        {
-          type: 'field',
-          value: photoFiles || 'undefined',
-          msg: 'photos are required',
-          path: 'upload',
-          location: 'body',
-        },
-      ]);
-    }
-    if (!isDateValid(date))
-      throw ApiError.BadRequest(
-        409,
-        'Event date must be in yyyy-mm-dd format',
-        [
-          {
-            type: 'field',
-            value: date,
-            msg: 'must be in yyyy-mm-dd format',
-            path: 'date',
-            location: 'body',
-          },
-        ]
-      );
-
     const ISODate = new Date(date).toISOString();
-    const candidate = await eventsRepo.findEvent('date', ISODate);
-    if (candidate) {
-      throw ApiError.BadRequest(409, `Event with date ${date} already exists`, [
-        {
-          type: 'field',
-          value: date,
-          msg: 'must be unique',
-          path: 'date',
-          location: 'body',
-        },
-      ]);
-    }
-    if (!containerName) {
-      throw ApiError.BadRequest(400, 'Storage container name is required');
-    }
 
     const photos: string[] = [];
     for (const file of photoFiles) {
@@ -107,11 +72,58 @@ export const eventsService = {
       teamPlace,
       photos,
       coverPhoto,
+      createdAt: new Date(),
     };
-    const { insertedId } = await eventsRepo.createEvent({ ...newEvent });
+    const { insertedId } = await eventsRepo.createEvent(newEvent);
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
     return { id: insertedId.toString(), ...newEvent };
+  },
+
+  async updateEvent({
+    id,
+    title,
+    description,
+    location,
+    photos: photoFiles,
+    teamPlace,
+    coverPhoto,
+  }: EventUpdateDTO): Promise<EventOutputDTO> {
+    const event = await this.findEvent(id);
+
+    for (const photo of event.photos) {
+      const res = await storageService.deleteFileFromAzureStorage(photo);
+      if (res.errorCode) {
+        throw ApiError.ServerError('Can not delete blob file');
+      }
+    }
+
+    const photos: string[] = [];
+    const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
+    for (const file of photoFiles) {
+      const blobFile = await storageService.writeFileToAzureStorage(
+        `${containerName}/${date}`,
+        file.originalname,
+        file.buffer
+      );
+      photos.push(blobFile.url);
+    }
+
+    const eventToUpdate: EventUpdateBdDTO = {
+      id,
+      title,
+      description,
+      location,
+      photos,
+      teamPlace,
+      coverPhoto,
+    };
+
+    const updatedEvent = await eventsRepo.updateEvent(eventToUpdate);
+    if (!updatedEvent) {
+      throw ApiError.NotFound(`Event with id: ${id} wasn't found`);
+    }
+    return eventModelMapper(updatedEvent);
   },
 
   async deleteEvent(id: string) {

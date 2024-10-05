@@ -1,7 +1,7 @@
 import { FindOptions, ObjectId, WithId } from 'mongodb';
 import { eventCollection } from '.';
 import { EventModel } from '../models';
-import { QueryDTO } from '../types';
+import { EventUpdateBdDTO, QueryDTO } from '../types';
 
 export const eventsRepo = {
   async findEvent<T extends keyof WithId<EventModel>>(
@@ -24,6 +24,18 @@ export const eventsRepo = {
 
   async createEvent(event: EventModel) {
     return await eventCollection.insertOne(event);
+  },
+
+  async updateEvent(updateData: EventUpdateBdDTO) {
+    const { id, ...fieldsToUpdate } = updateData;
+
+    const result = await eventCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { ...fieldsToUpdate, updatedAt: new Date() } },
+      { returnDocument: 'after' }
+    );
+
+    return result.value;
   },
 
   async deleteEvent(id: string) {

@@ -1,6 +1,10 @@
 import express from 'express';
 import { eventsController } from '../controllers';
-import { authMiddleware, multerMiddleware } from '../middleware';
+import {
+  authMiddleware,
+  checkEventCreateMiddleware,
+  multerMiddleware,
+} from '../middleware';
 import { PHOTO_ARRAY_LIMIT } from '../constants';
 import validateRequest, { eventsValidators } from '../validators';
 
@@ -21,7 +25,15 @@ eventsRouter.post(
   authMiddleware('ADMIN'),
   multerMiddleware('array', PHOTO_ARRAY_LIMIT),
   validateRequest(eventsValidators),
+  checkEventCreateMiddleware,
   eventsController.createEvent
+);
+eventsRouter.put(
+  '/',
+  authMiddleware('ADMIN'),
+  multerMiddleware('array', PHOTO_ARRAY_LIMIT),
+  validateRequest(eventsValidators),
+  eventsController.updateEvent
 );
 eventsRouter.delete(
   '/:id',

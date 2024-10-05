@@ -59,7 +59,7 @@ export const uploadFileRule = check('upload').custom((value, { req }) => {
 export const bodyDateRule = body('date')
   .trim()
   .isDate()
-  .withMessage('date must have date format');
+  .withMessage('date must be in yyyy-mm-dd format');
 
 export const bodyTitleRule = body('title')
   .trim()
@@ -77,14 +77,13 @@ export const bodyLocationRule = body('location')
   .withMessage('the location must contain min 3 characters');
 
 export const uploadFilesRule = check('upload').custom((value, { req }) => {
-  if (!req.files) {
-    throw new Error('files are required');
+  if (!req.files?.length) {
+    throw new Error('files to upload are required');
   }
   return true;
 });
 
-export const teamPlaceRule = body('teamPlace')
-  .optional()
-  .isNumeric()
-  .isByteLength({ gt: 0 })
-  .withMessage('the teamPlace must be a number more then 0');
+export const teamPlaceRule = body('teamPlace').optional();
+// .isNumeric()
+// .isByteLength({ gt: 0 })
+// .withMessage('the teamPlace must be a number more then 0');

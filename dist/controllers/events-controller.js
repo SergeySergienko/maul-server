@@ -59,6 +59,27 @@ exports.eventsController = {
             }
         });
     },
+    updateEvent(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, title, description, location, teamPlace, coverPhoto } = req.body;
+                const photos = req.files;
+                const event = yield services_1.eventsService.updateEvent({
+                    id,
+                    title,
+                    description,
+                    location,
+                    photos,
+                    teamPlace,
+                    coverPhoto,
+                });
+                return res.json(event);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    },
     deleteEvent(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

@@ -35,6 +35,7 @@ const validators_1 = __importStar(require("../validators"));
 exports.eventsRouter = express_1.default.Router();
 exports.eventsRouter.get('/', (0, validators_1.default)(validators_1.eventsValidators), controllers_1.eventsController.findEvents);
 exports.eventsRouter.get('/:id', (0, validators_1.default)(validators_1.eventsValidators), controllers_1.eventsController.findEvent);
-exports.eventsRouter.post('/', (0, middleware_1.authMiddleware)('ADMIN'), (0, middleware_1.multerMiddleware)('array', constants_1.PHOTO_ARRAY_LIMIT), (0, validators_1.default)(validators_1.eventsValidators), controllers_1.eventsController.createEvent);
+exports.eventsRouter.post('/', (0, middleware_1.authMiddleware)('ADMIN'), (0, middleware_1.multerMiddleware)('array', constants_1.PHOTO_ARRAY_LIMIT), (0, validators_1.default)(validators_1.eventsValidators), middleware_1.checkEventCreateMiddleware, controllers_1.eventsController.createEvent);
+exports.eventsRouter.put('/', (0, middleware_1.authMiddleware)('ADMIN'), (0, middleware_1.multerMiddleware)('array', constants_1.PHOTO_ARRAY_LIMIT), (0, validators_1.default)(validators_1.eventsValidators), controllers_1.eventsController.updateEvent);
 exports.eventsRouter.delete('/:id', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.eventsValidators), controllers_1.eventsController.deleteEvent);
 //# sourceMappingURL=events-router.js.map

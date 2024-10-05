@@ -48,43 +48,7 @@ exports.eventsService = {
     },
     createEvent(_a) {
         return __awaiter(this, arguments, void 0, function* ({ date, title, description, location, teamPlace, photos: photoFiles, coverPhoto, }) {
-            if (!photoFiles) {
-                throw api_error_1.ApiError.BadRequest(400, 'Photos are required', [
-                    {
-                        type: 'field',
-                        value: photoFiles || 'undefined',
-                        msg: 'photos are required',
-                        path: 'upload',
-                        location: 'body',
-                    },
-                ]);
-            }
-            if (!(0, utils_1.isDateValid)(date))
-                throw api_error_1.ApiError.BadRequest(409, 'Event date must be in yyyy-mm-dd format', [
-                    {
-                        type: 'field',
-                        value: date,
-                        msg: 'must be in yyyy-mm-dd format',
-                        path: 'date',
-                        location: 'body',
-                    },
-                ]);
             const ISODate = new Date(date).toISOString();
-            const candidate = yield repositories_1.eventsRepo.findEvent('date', ISODate);
-            if (candidate) {
-                throw api_error_1.ApiError.BadRequest(409, `Event with date ${date} already exists`, [
-                    {
-                        type: 'field',
-                        value: date,
-                        msg: 'must be unique',
-                        path: 'date',
-                        location: 'body',
-                    },
-                ]);
-            }
-            if (!containerName) {
-                throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
-            }
             const photos = [];
             for (const file of photoFiles) {
                 const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
@@ -98,11 +62,43 @@ exports.eventsService = {
                 teamPlace,
                 photos,
                 coverPhoto,
+                createdAt: new Date(),
             };
-            const { insertedId } = yield repositories_1.eventsRepo.createEvent(Object.assign({}, newEvent));
+            const { insertedId } = yield repositories_1.eventsRepo.createEvent(newEvent);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
             return Object.assign({ id: insertedId.toString() }, newEvent);
+        });
+    },
+    updateEvent(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ id, title, description, location, photos: photoFiles, teamPlace, coverPhoto, }) {
+            const event = yield this.findEvent(id);
+            for (const photo of event.photos) {
+                const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
+                if (res.errorCode) {
+                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                }
+            }
+            const photos = [];
+            const date = event.date.split('T')[0]; // yyyy-mm-ddT00:00:00.000Z => yyyy-mm-dd
+            for (const file of photoFiles) {
+                const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
+                photos.push(blobFile.url);
+            }
+            const eventToUpdate = {
+                id,
+                title,
+                description,
+                location,
+                photos,
+                teamPlace,
+                coverPhoto,
+            };
+            const updatedEvent = yield repositories_1.eventsRepo.updateEvent(eventToUpdate);
+            if (!updatedEvent) {
+                throw api_error_1.ApiError.NotFound(`Event with id: ${id} wasn't found`);
+            }
+            return (0, utils_1.eventModelMapper)(updatedEvent);
         });
     },
     deleteEvent(id) {

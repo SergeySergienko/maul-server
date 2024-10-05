@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eventsRepo = void 0;
 const mongodb_1 = require("mongodb");
@@ -31,6 +42,13 @@ exports.eventsRepo = {
     createEvent(event) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield _1.eventCollection.insertOne(event);
+        });
+    },
+    updateEvent(updateData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = updateData, fieldsToUpdate = __rest(updateData, ["id"]);
+            const result = yield _1.eventCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, fieldsToUpdate), { updatedAt: new Date() }) }, { returnDocument: 'after' });
+            return result.value;
         });
     },
     deleteEvent(id) {

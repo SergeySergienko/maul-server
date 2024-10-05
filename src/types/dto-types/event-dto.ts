@@ -17,4 +17,20 @@ export type EventOutputDTO = {
   photos: string[];
   teamPlace?: string;
   coverPhoto?: string;
+  createdAt: Date;
+  updatedAt?: Date;
+};
+
+export type EventUpdateDTO = {
+  id: string;
+  title: string;
+  description: string;
+  location: string;
+  photos: Express.Multer.File[];
+  teamPlace?: string;
+  coverPhoto?: string;
+};
+
+export type EventUpdateBdDTO = Omit<EventUpdateDTO, 'photos'> & {
+  photos: string[];
 };

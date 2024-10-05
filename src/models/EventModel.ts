@@ -6,4 +6,6 @@ export interface EventModel {
   photos: string[];
   teamPlace?: string;
   coverPhoto?: string;
+  createdAt: Date;
+  updatedAt?: Date;
 }

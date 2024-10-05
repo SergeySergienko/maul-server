@@ -18,23 +18,6 @@ export const usersService = {
   },
 
   async createUser({ email, password: userPassword }: UserInputDTO) {
-    const candidate = await usersRepo.findUser('email', email);
-    if (candidate) {
-      throw ApiError.BadRequest(
-        409,
-        `User with email ${email} already exists`,
-        [
-          {
-            type: 'field',
-            value: email,
-            msg: 'email address must be unique',
-            path: 'email',
-            location: 'body',
-          },
-        ]
-      );
-    }
-
     const hashPassword = await bcrypt.hash(userPassword, 7); // todo: move to auth-service
     const identifier = uuidv4();
     const newUser: UserModel = {

@@ -3,6 +3,7 @@ import { usersController } from '../controllers';
 import validateRequest, { usersValidators } from '../validators';
 import {
   authMiddleware,
+  checkUserCreateMiddleware,
   checkUserDeleteMiddleware,
   checkUserUpdateMiddleware,
 } from '../middleware';
@@ -18,6 +19,7 @@ usersRouter.get(
 usersRouter.post(
   '/',
   validateRequest(usersValidators),
+  checkUserCreateMiddleware,
   usersController.createUser
 );
 usersRouter.put(

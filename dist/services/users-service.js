@@ -32,18 +32,6 @@ exports.usersService = {
     },
     createUser(_a) {
         return __awaiter(this, arguments, void 0, function* ({ email, password: userPassword }) {
-            const candidate = yield repositories_1.usersRepo.findUser('email', email);
-            if (candidate) {
-                throw api_error_1.ApiError.BadRequest(409, `User with email ${email} already exists`, [
-                    {
-                        type: 'field',
-                        value: email,
-                        msg: 'email address must be unique',
-                        path: 'email',
-                        location: 'body',
-                    },
-                ]);
-            }
             const hashPassword = yield bcrypt_1.default.hash(userPassword, 7); // todo: move to auth-service
             const identifier = (0, uuid_1.v4)();
             const newUser = {

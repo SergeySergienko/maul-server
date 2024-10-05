@@ -45,7 +45,7 @@ exports.uploadFileRule = (0, express_validator_1.check)('upload').custom((value,
 exports.bodyDateRule = (0, express_validator_1.body)('date')
     .trim()
     .isDate()
-    .withMessage('date must have date format');
+    .withMessage('date must be in yyyy-mm-dd format');
 exports.bodyTitleRule = (0, express_validator_1.body)('title')
     .trim()
     .isLength({ min: 3 })
@@ -59,14 +59,14 @@ exports.bodyLocationRule = (0, express_validator_1.body)('location')
     .isLength({ min: 3 })
     .withMessage('the location must contain min 3 characters');
 exports.uploadFilesRule = (0, express_validator_1.check)('upload').custom((value, { req }) => {
-    if (!req.files) {
-        throw new Error('files are required');
+    var _a;
+    if (!((_a = req.files) === null || _a === void 0 ? void 0 : _a.length)) {
+        throw new Error('files to upload are required');
     }
     return true;
 });
-exports.teamPlaceRule = (0, express_validator_1.body)('teamPlace')
-    .optional()
-    .isNumeric()
-    .isByteLength({ gt: 0 })
-    .withMessage('the teamPlace must be a number more then 0');
+exports.teamPlaceRule = (0, express_validator_1.body)('teamPlace').optional();
+// .isNumeric()
+// .isByteLength({ gt: 0 })
+// .withMessage('the teamPlace must be a number more then 0');
 //# sourceMappingURL=rules.js.map

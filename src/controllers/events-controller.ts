@@ -4,9 +4,10 @@ import {
   RequestWithBody,
   RequestWithQuery,
   RequestWithParams,
-  EventOutputDTO,
-  IdParamsDTO,
   EventInputDTO,
+  EventOutputDTO,
+  EventUpdateDTO,
+  IdParamsDTO,
   QueryDTO,
 } from '../types';
 
@@ -61,6 +62,32 @@ export const eventsController = {
         coverPhoto,
       });
       return res.status(201).json(event);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async updateEvent(
+    req: RequestWithBody<EventUpdateDTO>,
+    res: Response<EventOutputDTO>,
+    next: NextFunction
+  ) {
+    try {
+      const { id, title, description, location, teamPlace, coverPhoto } =
+        req.body;
+      const photos = req.files as Express.Multer.File[];
+
+      const event = await eventsService.updateEvent({
+        id,
+        title,
+        description,
+        location,
+        photos,
+        teamPlace,
+        coverPhoto,
+      });
+
+      return res.json(event);
     } catch (error) {
       next(error);
     }
