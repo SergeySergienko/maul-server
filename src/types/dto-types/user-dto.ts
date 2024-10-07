@@ -11,7 +11,6 @@ export type UserOutputDTO = {
   role: keyof typeof RoleModel;
   createdAt: Date;
   updatedAt?: Date;
-  activationToken?: string;
 };
 
 export type UserUpdateDTO = {

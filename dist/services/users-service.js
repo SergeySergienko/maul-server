@@ -45,8 +45,7 @@ exports.usersService = {
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('User was not inserted');
             yield mail_service_1.default.sendActivationMail(email, identifier);
-            const user = (0, utils_1.userModelMapper)(Object.assign(Object.assign({}, newUser), { _id: insertedId }));
-            return Object.assign(Object.assign({}, user), { activationToken: identifier });
+            return (0, utils_1.userModelMapper)(Object.assign(Object.assign({}, newUser), { _id: insertedId }));
         });
     },
     updateUser(userDataToUpdate) {

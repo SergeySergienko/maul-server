@@ -33,12 +33,10 @@ export const usersService = {
 
     await mailService.sendActivationMail(email, identifier);
 
-    const user = userModelMapper({
+    return userModelMapper({
       ...newUser,
       _id: insertedId,
     });
-
-    return { ...user, activationToken: identifier };
   },
 
   async updateUser(userDataToUpdate: UserUpdateDTO) {
