@@ -41,12 +41,14 @@ exports.teamMembersController = {
     createTeamMember(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name, position } = req.body;
-                const file = req.file;
+                const { userId, name, position, slogan } = req.body;
+                const photo = req.file;
                 const teamMember = yield services_1.teamMembersService.createTeamMember({
+                    userId,
                     name,
                     position,
-                    file,
+                    photo,
+                    slogan,
                 });
                 return res.status(201).json(teamMember);
             }

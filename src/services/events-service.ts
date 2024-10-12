@@ -3,7 +3,7 @@ import { EventModel } from '../models';
 import { eventsRepo } from '../repositories';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
-import { eventModelMapper, isDateValid } from '../utils';
+import { eventModelMapper } from '../utils';
 import {
   EventInputDTO,
   EventOutputDTO,
@@ -52,8 +52,6 @@ export const eventsService = {
     photos: photoFiles,
     coverPhoto,
   }: EventInputDTO): Promise<EventOutputDTO> {
-    const ISODate = new Date(date).toISOString();
-
     const photos: string[] = [];
     for (const file of photoFiles) {
       const blobFile = await storageService.writeFileToAzureStorage(
@@ -65,7 +63,7 @@ export const eventsService = {
     }
 
     const newEvent: EventModel = {
-      date: ISODate,
+      date: new Date(date).toISOString(),
       title,
       description,
       location,
@@ -77,7 +75,7 @@ export const eventsService = {
     const { insertedId } = await eventsRepo.createEvent(newEvent);
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
-    return { id: insertedId.toString(), ...newEvent };
+    return eventModelMapper({ ...newEvent, _id: insertedId });
   },
 
   async updateEvent({

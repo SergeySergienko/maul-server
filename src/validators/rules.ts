@@ -1,5 +1,5 @@
 import { body, check, query, param } from 'express-validator';
-import { ALLOWED_ROLES } from '../constants';
+import { ALLOWED_ROLES, POSITIONS } from '../constants';
 
 export const limitRule = query('limit')
   .optional()
@@ -38,15 +38,18 @@ export const bodyPasswordRule = body(
   .isLength({ min: 4, max: 10 });
 
 // team-member rules
+export const bodyUserIdRule = body('userId')
+  .isMongoId()
+  .withMessage('userId must have mongoId format');
+
 export const bodyNameRule = body('name')
   .trim()
   .notEmpty()
   .withMessage('name is required');
 
 export const bodyPositionRule = body('position')
-  .trim()
-  .notEmpty()
-  .withMessage('position is required');
+  .isIn(POSITIONS)
+  .withMessage(`position must have one of the values: [${POSITIONS}]`);
 
 export const uploadFileRule = check('upload').custom((value, { req }) => {
   if (!req.file) {
@@ -54,6 +57,11 @@ export const uploadFileRule = check('upload').custom((value, { req }) => {
   }
   return true;
 });
+
+export const bodySloganRule = body('slogan')
+  .trim()
+  .notEmpty()
+  .withMessage('slogan is required');
 
 // event rules
 export const bodyDateRule = body('date')

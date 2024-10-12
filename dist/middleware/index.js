@@ -18,6 +18,7 @@ __exportStar(require("./authMiddleware"), exports);
 __exportStar(require("./multerMiddleware"), exports);
 __exportStar(require("./validationResultMiddleware"), exports);
 __exportStar(require("./checkEventCreateMiddleware"), exports);
+__exportStar(require("./checkTeamMemberCreateMiddleware"), exports);
 __exportStar(require("./checkUserCreateMiddleware"), exports);
 __exportStar(require("./checkUserDeleteMiddleware"), exports);
 __exportStar(require("./checkUserUpdateMiddleware"), exports);

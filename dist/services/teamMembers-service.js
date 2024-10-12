@@ -46,37 +46,29 @@ exports.teamMembersService = {
         });
     },
     createTeamMember(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ name, position, file, }) {
-            const candidate = yield repositories_1.teamMembersRepo.findTeamMember('name', name);
-            if (candidate) {
-                throw api_error_1.ApiError.BadRequest(409, `Team member with name ${name} already exists`, [
-                    {
-                        type: 'field',
-                        value: name,
-                        msg: 'must be unique',
-                        path: 'name',
-                        location: 'body',
-                    },
-                ]);
-            }
-            const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
-            if (!containerName) {
-                throw api_error_1.ApiError.ServerError('Storage container name is required');
-            }
-            const { normalizedFileName, resizedImageBuffer } = yield (0, utils_1.normalizeImage)(file);
-            if (!normalizedFileName) {
-                throw api_error_1.ApiError.BadRequest(409, 'File extension is not allowed');
-            }
-            const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, normalizedFileName, resizedImageBuffer);
+        return __awaiter(this, arguments, void 0, function* ({ userId, name, position, photo, slogan, }) {
+            // const { normalizedFileName, resizedImageBuffer } = await normalizeImage(
+            //   file
+            // );
+            // if (!normalizedFileName) {
+            //   throw ApiError.BadRequest(409, 'File extension is not allowed');
+            // }
+            const containerName = process.env
+                .AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
+            const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, photo.originalname, photo.buffer);
             const newTeamMember = {
+                userId,
                 name,
                 position,
                 photo: blobFile.url,
+                slogan,
+                isActivated: false,
+                createdAt: new Date(),
             };
-            const result = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);
-            if (!result.insertedId)
+            const { insertedId } = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);
+            if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
-            return Object.assign(Object.assign({}, newTeamMember), { _id: result.insertedId });
+            return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
         });
     },
 };

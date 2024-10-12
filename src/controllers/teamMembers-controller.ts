@@ -2,8 +2,15 @@ import { Response, NextFunction } from 'express';
 import { WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersService } from '../services';
-import { RequestWithBody, RequestWithQuery, RequestWithParams } from '../types';
-import { IdParamsDTO, PostTeamMemberDTO, QueryDTO } from '../types';
+import {
+  RequestWithBody,
+  RequestWithQuery,
+  RequestWithParams,
+  TeamMemberInputDTO,
+  IdParamsDTO,
+  QueryDTO,
+  TeamMemberOutputDTO,
+} from '../types';
 
 export const teamMembersController = {
   async findTeamMember(
@@ -37,17 +44,19 @@ export const teamMembersController = {
   },
 
   async createTeamMember(
-    req: RequestWithBody<PostTeamMemberDTO>,
-    res: Response<WithId<TeamMemberModel>>,
+    req: RequestWithBody<TeamMemberInputDTO>,
+    res: Response<TeamMemberOutputDTO>,
     next: NextFunction
   ) {
     try {
-      const { name, position } = req.body;
-      const file = req.file as Express.Multer.File;
+      const { userId, name, position, slogan } = req.body;
+      const photo = req.file as Express.Multer.File;
       const teamMember = await teamMembersService.createTeamMember({
+        userId,
         name,
         position,
-        file,
+        photo,
+        slogan,
       });
       return res.status(201).json(teamMember);
     } catch (error) {

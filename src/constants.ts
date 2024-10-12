@@ -1,4 +1,4 @@
-import { RoleModel } from './models';
+import { PositionModel, RoleModel } from './models';
 
 export const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 export const IMAGE_WIDTH = 192;
@@ -10,6 +10,13 @@ export const ALLOWED_ROLES: Array<Exclude<keyof typeof RoleModel, 'OWNER'>> = [
   'USER',
   'MEMBER',
   'ADMIN',
+];
+
+export const POSITIONS: Array<keyof typeof PositionModel> = [
+  'UNIVERSAL',
+  'LIBERO',
+  'SETTER',
+  'HITTER',
 ];
 
 export const CLIENT_ORIGIN =

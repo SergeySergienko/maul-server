@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
+exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.bodySloganRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.bodyUserIdRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
 const express_validator_1 = require("express-validator");
 const constants_1 = require("../constants");
 exports.limitRule = (0, express_validator_1.query)('limit')
@@ -27,20 +27,26 @@ exports.bodyPasswordRule = (0, express_validator_1.body)('password', 'the passwo
     .trim()
     .isLength({ min: 4, max: 10 });
 // team-member rules
+exports.bodyUserIdRule = (0, express_validator_1.body)('userId')
+    .isMongoId()
+    .withMessage('userId must have mongoId format');
 exports.bodyNameRule = (0, express_validator_1.body)('name')
     .trim()
     .notEmpty()
     .withMessage('name is required');
 exports.bodyPositionRule = (0, express_validator_1.body)('position')
-    .trim()
-    .notEmpty()
-    .withMessage('position is required');
+    .isIn(constants_1.POSITIONS)
+    .withMessage(`position must have one of the values: [${constants_1.POSITIONS}]`);
 exports.uploadFileRule = (0, express_validator_1.check)('upload').custom((value, { req }) => {
     if (!req.file) {
         throw new Error('file is required');
     }
     return true;
 });
+exports.bodySloganRule = (0, express_validator_1.body)('slogan')
+    .trim()
+    .notEmpty()
+    .withMessage('slogan is required');
 // event rules
 exports.bodyDateRule = (0, express_validator_1.body)('date')
     .trim()

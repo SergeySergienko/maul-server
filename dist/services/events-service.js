@@ -48,14 +48,13 @@ exports.eventsService = {
     },
     createEvent(_a) {
         return __awaiter(this, arguments, void 0, function* ({ date, title, description, location, teamPlace, photos: photoFiles, coverPhoto, }) {
-            const ISODate = new Date(date).toISOString();
             const photos = [];
             for (const file of photoFiles) {
                 const blobFile = yield _1.storageService.writeFileToAzureStorage(`${containerName}/${date}`, file.originalname, file.buffer);
                 photos.push(blobFile.url);
             }
             const newEvent = {
-                date: ISODate,
+                date: new Date(date).toISOString(),
                 title,
                 description,
                 location,
@@ -67,7 +66,7 @@ exports.eventsService = {
             const { insertedId } = yield repositories_1.eventsRepo.createEvent(newEvent);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
-            return Object.assign({ id: insertedId.toString() }, newEvent);
+            return (0, utils_1.eventModelMapper)(Object.assign(Object.assign({}, newEvent), { _id: insertedId }));
         });
     },
     updateEvent(_a) {

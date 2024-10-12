@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserWithTokens = exports.eventModelMapper = exports.userModelMapper = exports.parseBlobUrl = exports.normalizeImage = exports.isDateValid = void 0;
+exports.getUserWithTokens = exports.teamMemberModelMapper = exports.eventModelMapper = exports.userModelMapper = exports.parseBlobUrl = exports.normalizeImage = exports.isDateValid = void 0;
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const constants_1 = require("./constants");
@@ -78,6 +78,11 @@ const eventModelMapper = (event) => {
     return Object.assign({ id: _id.toString() }, rest);
 };
 exports.eventModelMapper = eventModelMapper;
+const teamMemberModelMapper = (event) => {
+    const { _id } = event, rest = __rest(event, ["_id"]);
+    return Object.assign({ id: _id.toString() }, rest);
+};
+exports.teamMemberModelMapper = teamMemberModelMapper;
 const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     const user = (0, exports.userModelMapper)(userData);
     const tokens = services_1.tokensService.generateTokens(user);

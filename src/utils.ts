@@ -3,9 +3,9 @@ import path from 'path';
 import sharp from 'sharp';
 import { NormalizedImageResult } from './types';
 import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
-import { EventModel, UserModel } from './models';
+import { EventModel, TeamMemberModel, UserModel } from './models';
 import { tokensService } from './services';
-import { EventOutputDTO, UserOutputDTO } from './types';
+import { EventOutputDTO, TeamMemberOutputDTO, UserOutputDTO } from './types';
 
 export const isDateValid = (date: string) => {
   const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -73,6 +73,13 @@ export const userModelMapper = ({
 });
 
 export const eventModelMapper = (event: WithId<EventModel>): EventOutputDTO => {
+  const { _id, ...rest } = event;
+  return { id: _id.toString(), ...rest };
+};
+
+export const teamMemberModelMapper = (
+  event: WithId<TeamMemberModel>
+): TeamMemberOutputDTO => {
   const { _id, ...rest } = event;
   return { id: _id.toString(), ...rest };
 };

@@ -3,8 +3,8 @@ import { TeamMemberModel } from '../models';
 import { teamMembersRepo } from '../repositories';
 import { storageService } from '.';
 import { ApiError } from '../exceptions/api-error';
-import { normalizeImage } from '../utils';
-import { PostTeamMemberDTO, QueryDTO } from '../types';
+import { normalizeImage, teamMemberModelMapper } from '../utils';
+import { QueryDTO, TeamMemberInputDTO, TeamMemberOutputDTO } from '../types';
 
 export const teamMembersService = {
   async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
@@ -39,53 +39,41 @@ export const teamMembersService = {
   },
 
   async createTeamMember({
+    userId,
     name,
     position,
-    file,
-  }: PostTeamMemberDTO): Promise<WithId<TeamMemberModel>> {
-    const candidate = await teamMembersRepo.findTeamMember('name', name);
-    if (candidate) {
-      throw ApiError.BadRequest(
-        409,
-        `Team member with name ${name} already exists`,
-        [
-          {
-            type: 'field',
-            value: name,
-            msg: 'must be unique',
-            path: 'name',
-            location: 'body',
-          },
-        ]
-      );
-    }
-
-    const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
-    if (!containerName) {
-      throw ApiError.ServerError('Storage container name is required');
-    }
-
-    const { normalizedFileName, resizedImageBuffer } = await normalizeImage(
-      file
-    );
-    if (!normalizedFileName) {
-      throw ApiError.BadRequest(409, 'File extension is not allowed');
-    }
+    photo,
+    slogan,
+  }: TeamMemberInputDTO): Promise<TeamMemberOutputDTO> {
+    // const { normalizedFileName, resizedImageBuffer } = await normalizeImage(
+    //   file
+    // );
+    // if (!normalizedFileName) {
+    //   throw ApiError.BadRequest(409, 'File extension is not allowed');
+    // }
+    const containerName = process.env
+      .AZURE_STORAGE_MEMBERS_CONTAINER_NAME as string;
 
     const blobFile = await storageService.writeFileToAzureStorage(
       containerName,
-      normalizedFileName,
-      resizedImageBuffer
+      photo.originalname,
+      photo.buffer
     );
 
-    const newTeamMember = {
+    const newTeamMember: TeamMemberModel = {
+      userId,
       name,
       position,
       photo: blobFile.url,
+      slogan,
+      isActivated: false,
+      createdAt: new Date(),
     };
-    const result = await teamMembersRepo.createTeamMember(newTeamMember);
-    if (!result.insertedId) throw ApiError.ServerError('Internal Server Error');
+    const { insertedId } = await teamMembersRepo.createTeamMember(
+      newTeamMember
+    );
+    if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
-    return { ...newTeamMember, _id: result.insertedId };
+    return teamMemberModelMapper({ ...newTeamMember, _id: insertedId });
   },
 };
