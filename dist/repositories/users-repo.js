@@ -33,13 +33,17 @@ exports.usersRepo = {
         });
     },
     findUsers(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort, role }) {
             const options = {};
+            const filter = {};
             if (limit) {
                 options.limit = +limit;
             }
             options.sort = { email: sort || 'asc' };
-            return yield _1.userCollection.find({}, options).toArray();
+            if (role) {
+                filter.role = role;
+            }
+            return yield _1.userCollection.find(filter, options).toArray();
         });
     },
     createUser(user) {

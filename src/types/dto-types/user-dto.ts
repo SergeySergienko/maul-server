@@ -24,3 +24,9 @@ export type UserFindDTO = {
   email: string;
   activationToken: string;
 };
+
+export type UsersFindDTO = {
+  limit?: string;
+  sort?: 'asc' | 'desc';
+  role?: keyof typeof RoleModel;
+};

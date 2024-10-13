@@ -1,17 +1,19 @@
 import { NextFunction, Response } from 'express';
 import { usersService } from '../services';
-import { RequestWithBody, RequestWithParams, RequestWithQuery } from '../types';
 import {
   IdParamsDTO,
-  QueryDTO,
+  RequestWithBody,
+  RequestWithParams,
+  RequestWithQuery,
   UserInputDTO,
   UserOutputDTO,
+  UsersFindDTO,
   UserUpdateDTO,
 } from '../types';
 
 export const usersController = {
   async findUsers(
-    req: RequestWithQuery<QueryDTO>,
+    req: RequestWithQuery<UsersFindDTO>,
     res: Response<UserOutputDTO[]>,
     next: NextFunction
   ) {

@@ -1,7 +1,7 @@
-import { FindOptions, ObjectId } from 'mongodb';
+import { Filter, FindOptions, ObjectId } from 'mongodb';
 import { userCollection } from '.';
 import { UserModel } from '../models';
-import { QueryDTO, UserFindDTO, UserUpdateDTO } from '../types';
+import { UserFindDTO, UsersFindDTO, UserUpdateDTO } from '../types';
 
 export const usersRepo = {
   async findUser<T extends keyof UserFindDTO>(field: T, value: UserFindDTO[T]) {
@@ -11,15 +11,20 @@ export const usersRepo = {
     return await userCollection.findOne({ [field]: value });
   },
 
-  async findUsers({ limit, sort }: QueryDTO) {
+  async findUsers({ limit, sort, role }: UsersFindDTO) {
     const options: FindOptions = {};
+    const filter: Filter<UserModel> = {};
 
     if (limit) {
       options.limit = +limit;
     }
     options.sort = { email: sort || 'asc' };
 
-    return await userCollection.find({}, options).toArray();
+    if (role) {
+      filter.role = role;
+    }
+
+    return await userCollection.find(filter, options).toArray();
   },
 
   async createUser(user: UserModel) {

@@ -25,18 +25,35 @@ class MailService {
             },
         });
     }
-    sendActivationMail(to, identifier) {
+    sendAccountActivationMail(to, identifier) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.transport.sendMail({
-                    from: 'no-reply <maul-server>',
+                    from: 'no-reply/keine Antwort <maul-server>',
                     to,
-                    subject: 'Account activation',
-                    html: `Follow this <a href="${constants_1.CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address`,
+                    subject: 'Account activation / Accountaktivierung',
+                    html: `Follow this <a href="${constants_1.CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address /
+         Folgen Sie diesem <a href="${constants_1.CLIENT_ORIGIN}/email-confirmation/${identifier}">Link</a>, um Ihre E-Mail-Adresse zu bestätigen`,
                 });
             }
             catch (error) {
-                throw api_error_1.ApiError.ServerError('Internal Server Error');
+                throw api_error_1.ApiError.ServerError('Mail Service Error');
+            }
+        });
+    }
+    sendTeamMemberActivationMail(to, teamMemberId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.transport.sendMail({
+                    from: 'no-reply/keine Antwort <maul-server>',
+                    to,
+                    subject: 'Team membership activation / Aktivierung der Teammitgliedschaft',
+                    html: `Activation request received from the candidate with team member id: ${teamMemberId} /
+         Aktivierungsanforderung vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+                });
+            }
+            catch (error) {
+                throw api_error_1.ApiError.ServerError('Mail Service Error');
             }
         });
     }

@@ -5,12 +5,12 @@ import { UserModel } from '../models';
 import { usersRepo } from '../repositories';
 import { userModelMapper } from '../utils';
 import { ALLOWED_ROLES } from '../constants';
-import { QueryDTO, UserInputDTO, UserUpdateDTO } from '../types';
+import { UserInputDTO, UsersFindDTO, UserUpdateDTO } from '../types';
 import mailService from './mail-service';
 
 export const usersService = {
-  async findUsers({ limit, sort }: QueryDTO) {
-    const users = await usersRepo.findUsers({ limit, sort });
+  async findUsers({ limit, sort, role }: UsersFindDTO) {
+    const users = await usersRepo.findUsers({ limit, sort, role });
     if (!users) {
       throw ApiError.ServerError('Internal Server Error');
     }
@@ -31,7 +31,7 @@ export const usersService = {
     const { insertedId } = await usersRepo.createUser(newUser);
     if (!insertedId) throw ApiError.ServerError('User was not inserted');
 
-    await mailService.sendActivationMail(email, identifier);
+    await mailService.sendAccountActivationMail(email, identifier);
 
     return userModelMapper({
       ...newUser,

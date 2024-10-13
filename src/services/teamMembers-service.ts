@@ -1,10 +1,11 @@
 import { ObjectId, WithId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersRepo } from '../repositories';
-import { storageService } from '.';
+import { storageService, usersService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage, teamMemberModelMapper } from '../utils';
 import { QueryDTO, TeamMemberInputDTO, TeamMemberOutputDTO } from '../types';
+import mailService from './mail-service';
 
 export const teamMembersService = {
   async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
@@ -74,6 +75,15 @@ export const teamMembersService = {
     );
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
+    const admins = await usersService.findUsers({ role: 'ADMIN' });
+    await Promise.all(
+      admins.map((admin) =>
+        mailService.sendTeamMemberActivationMail(
+          admin.email,
+          insertedId.toString()
+        )
+      )
+    );
     return teamMemberModelMapper({ ...newTeamMember, _id: insertedId });
   },
 };

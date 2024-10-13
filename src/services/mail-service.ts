@@ -13,16 +13,31 @@ class MailService {
       },
     });
   }
-  async sendActivationMail(to: string, identifier: string) {
+  async sendAccountActivationMail(to: string, identifier: string) {
     try {
       await this.transport.sendMail({
-        from: 'no-reply <maul-server>',
+        from: 'no-reply/keine Antwort <maul-server>',
         to,
-        subject: 'Account activation',
-        html: `Follow this <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address`,
+        subject: 'Account activation / Accountaktivierung',
+        html: `Follow this <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address /
+         Folgen Sie diesem <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">Link</a>, um Ihre E-Mail-Adresse zu bestätigen`,
       });
     } catch (error) {
-      throw ApiError.ServerError('Internal Server Error');
+      throw ApiError.ServerError('Mail Service Error');
+    }
+  }
+  async sendTeamMemberActivationMail(to: string, teamMemberId: string) {
+    try {
+      await this.transport.sendMail({
+        from: 'no-reply/keine Antwort <maul-server>',
+        to,
+        subject:
+          'Team membership activation / Aktivierung der Teammitgliedschaft',
+        html: `Activation request received from the candidate with team member id: ${teamMemberId} /
+         Aktivierungsanforderung vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+      });
+    } catch (error) {
+      throw ApiError.ServerError('Mail Service Error');
     }
   }
 }

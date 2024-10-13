@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.teamMembersService = void 0;
 const mongodb_1 = require("mongodb");
@@ -15,6 +18,7 @@ const repositories_1 = require("../repositories");
 const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
 const utils_1 = require("../utils");
+const mail_service_1 = __importDefault(require("./mail-service"));
 exports.teamMembersService = {
     findTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -68,6 +72,8 @@ exports.teamMembersService = {
             const { insertedId } = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
+            const admins = yield _1.usersService.findUsers({ role: 'ADMIN' });
+            yield Promise.all(admins.map((admin) => mail_service_1.default.sendTeamMemberActivationMail(admin.email, insertedId.toString())));
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
         });
     },
