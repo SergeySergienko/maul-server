@@ -27,3 +27,16 @@ teamMembersRouter.post(
   checkTeamMemberCreateMiddleware,
   teamMembersController.createTeamMember
 );
+teamMembersRouter.put(
+  '/',
+  authMiddleware('ADMIN'),
+  multerMiddleware('single'),
+  validateRequest(teamMembersValidators),
+  teamMembersController.updateTeamMember
+);
+teamMembersRouter.delete(
+  '/:id',
+  authMiddleware('ADMIN'),
+  validateRequest(teamMembersValidators),
+  teamMembersController.deleteTeamMember
+);

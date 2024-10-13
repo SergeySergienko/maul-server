@@ -1,4 +1,5 @@
 import {
+  bodyIdRule,
   bodyNameRule,
   bodyPositionRule,
   bodySloganRule,
@@ -19,4 +20,11 @@ export const teamMembersValidators = {
     uploadFileRule,
     bodySloganRule,
   ],
+  'PUT /api/team-members/': [
+    bodyIdRule,
+    bodyNameRule,
+    bodyPositionRule,
+    bodySloganRule,
+  ],
+  'DELETE /api/team-members/:id': [paramIdRule],
 };

@@ -4,11 +4,20 @@ import { teamMembersRepo } from '../repositories';
 import { storageService, usersService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage, teamMemberModelMapper } from '../utils';
-import { QueryDTO, TeamMemberInputDTO, TeamMemberOutputDTO } from '../types';
+import {
+  QueryDTO,
+  TeamMemberInputDTO,
+  TeamMemberOutputDTO,
+  TeamMemberUpdateBdDTO,
+  TeamMemberUpdateDTO,
+} from '../types';
 import mailService from './mail-service';
 
+const containerName = process.env
+  .AZURE_STORAGE_MEMBERS_CONTAINER_NAME as string;
+
 export const teamMembersService = {
-  async findTeamMember(id: string): Promise<WithId<TeamMemberModel>> {
+  async findTeamMember(id: string) {
     const teamMember = await teamMembersRepo.findTeamMember(
       '_id',
       new ObjectId(id)
@@ -24,7 +33,8 @@ export const teamMembersService = {
         },
       ]);
     }
-    return teamMember;
+
+    return teamMemberModelMapper(teamMember);
   },
 
   async findTeamMembers({ limit, sort }: QueryDTO) {
@@ -36,7 +46,8 @@ export const teamMembersService = {
     if (!teamMembers) {
       throw ApiError.ServerError('Internal Server Error');
     }
-    return teamMembers;
+
+    return teamMembers.map(teamMemberModelMapper);
   },
 
   async createTeamMember({
@@ -52,9 +63,6 @@ export const teamMembersService = {
     // if (!normalizedFileName) {
     //   throw ApiError.BadRequest(409, 'File extension is not allowed');
     // }
-    const containerName = process.env
-      .AZURE_STORAGE_MEMBERS_CONTAINER_NAME as string;
-
     const blobFile = await storageService.writeFileToAzureStorage(
       containerName,
       photo.originalname,
@@ -84,6 +92,68 @@ export const teamMembersService = {
         )
       )
     );
+
     return teamMemberModelMapper({ ...newTeamMember, _id: insertedId });
+  },
+
+  async updateTeamMember({
+    id,
+    name,
+    position,
+    photo,
+    slogan,
+  }: TeamMemberUpdateDTO) {
+    const teamMemberToUpdate: TeamMemberUpdateBdDTO = {
+      id,
+      name,
+      position,
+      slogan,
+    };
+
+    if (photo) {
+      const teamMember = await this.findTeamMember(id);
+
+      const res = await storageService.deleteFileFromAzureStorage(
+        teamMember.photo
+      );
+      if (res.errorCode) {
+        throw ApiError.ServerError('Can not delete blob file');
+      }
+
+      const blobFile = await storageService.writeFileToAzureStorage(
+        containerName,
+        photo.originalname,
+        photo.buffer
+      );
+
+      teamMemberToUpdate.photo = blobFile.url;
+    }
+
+    const updatedTeamMember = await teamMembersRepo.updateTeamMember(
+      teamMemberToUpdate
+    );
+    if (!updatedTeamMember) {
+      throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
+    }
+
+    return teamMemberModelMapper(updatedTeamMember);
+  },
+
+  async deleteTeamMember(id: string) {
+    const teamMemberToDelete = await this.findTeamMember(id);
+    const res = await storageService.deleteFileFromAzureStorage(
+      teamMemberToDelete.photo
+    );
+
+    if (res.errorCode) {
+      throw ApiError.ServerError('Can not delete blob file');
+    }
+
+    const { deletedCount } = await teamMembersRepo.deleteTeamMember(id);
+    if (deletedCount !== 1) {
+      throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
+    }
+
+    return id;
   },
 };

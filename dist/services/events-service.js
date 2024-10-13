@@ -79,7 +79,7 @@ exports.eventsService = {
                 teamPlace,
                 coverPhoto,
             };
-            if (photoFiles.length) {
+            if (photoFiles === null || photoFiles === void 0 ? void 0 : photoFiles.length) {
                 const event = yield this.findEvent(id);
                 for (const photo of event.photos) {
                     const res = yield _1.storageService.deleteFileFromAzureStorage(photo);

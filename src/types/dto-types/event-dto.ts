@@ -26,7 +26,7 @@ export type EventUpdateDTO = {
   title: string;
   description: string;
   location: string;
-  photos: Express.Multer.File[];
+  photos?: Express.Multer.File[];
   teamPlace?: string;
   coverPhoto?: string;
 };

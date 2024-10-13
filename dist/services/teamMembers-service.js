@@ -19,6 +19,8 @@ const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
 const utils_1 = require("../utils");
 const mail_service_1 = __importDefault(require("./mail-service"));
+const containerName = process.env
+    .AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
 exports.teamMembersService = {
     findTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +36,7 @@ exports.teamMembersService = {
                     },
                 ]);
             }
-            return teamMember;
+            return (0, utils_1.teamMemberModelMapper)(teamMember);
         });
     },
     findTeamMembers(_a) {
@@ -46,7 +48,7 @@ exports.teamMembersService = {
             if (!teamMembers) {
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
             }
-            return teamMembers;
+            return teamMembers.map(utils_1.teamMemberModelMapper);
         });
     },
     createTeamMember(_a) {
@@ -57,8 +59,6 @@ exports.teamMembersService = {
             // if (!normalizedFileName) {
             //   throw ApiError.BadRequest(409, 'File extension is not allowed');
             // }
-            const containerName = process.env
-                .AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
             const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, photo.originalname, photo.buffer);
             const newTeamMember = {
                 userId,
@@ -75,6 +75,44 @@ exports.teamMembersService = {
             const admins = yield _1.usersService.findUsers({ role: 'ADMIN' });
             yield Promise.all(admins.map((admin) => mail_service_1.default.sendTeamMemberActivationMail(admin.email, insertedId.toString())));
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
+        });
+    },
+    updateTeamMember(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ id, name, position, photo, slogan, }) {
+            const teamMemberToUpdate = {
+                id,
+                name,
+                position,
+                slogan,
+            };
+            if (photo) {
+                const teamMember = yield this.findTeamMember(id);
+                const res = yield _1.storageService.deleteFileFromAzureStorage(teamMember.photo);
+                if (res.errorCode) {
+                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                }
+                const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, photo.originalname, photo.buffer);
+                teamMemberToUpdate.photo = blobFile.url;
+            }
+            const updatedTeamMember = yield repositories_1.teamMembersRepo.updateTeamMember(teamMemberToUpdate);
+            if (!updatedTeamMember) {
+                throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
+            }
+            return (0, utils_1.teamMemberModelMapper)(updatedTeamMember);
+        });
+    },
+    deleteTeamMember(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const teamMemberToDelete = yield this.findTeamMember(id);
+            const res = yield _1.storageService.deleteFileFromAzureStorage(teamMemberToDelete.photo);
+            if (res.errorCode) {
+                throw api_error_1.ApiError.ServerError('Can not delete blob file');
+            }
+            const { deletedCount } = yield repositories_1.teamMembersRepo.deleteTeamMember(id);
+            if (deletedCount !== 1) {
+                throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
+            }
+            return id;
         });
     },
 };

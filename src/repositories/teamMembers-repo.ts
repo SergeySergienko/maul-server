@@ -1,7 +1,7 @@
-import { FindOptions, WithId } from 'mongodb';
+import { FindOptions, ObjectId, WithId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
-import { QueryDTO } from '../types';
+import { QueryDTO, TeamMemberUpdateBdDTO } from '../types';
 
 export const teamMembersRepo = {
   async findTeamMember<T extends keyof WithId<TeamMemberModel>>(
@@ -24,5 +24,21 @@ export const teamMembersRepo = {
 
   async createTeamMember(teamMember: TeamMemberModel) {
     return await teamMemberCollection.insertOne(teamMember);
+  },
+
+  async updateTeamMember(updateData: TeamMemberUpdateBdDTO) {
+    const { id, ...fieldsToUpdate } = updateData;
+
+    const result = await teamMemberCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { ...fieldsToUpdate, updatedAt: new Date() } },
+      { returnDocument: 'after' }
+    );
+
+    return result.value;
+  },
+
+  async deleteTeamMember(id: string) {
+    return await teamMemberCollection.deleteOne({ _id: new ObjectId(id) });
   },
 };

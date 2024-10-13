@@ -86,7 +86,7 @@ export const eventsService = {
     photos: photoFiles,
     teamPlace,
     coverPhoto,
-  }: EventUpdateDTO): Promise<EventOutputDTO> {
+  }: EventUpdateDTO) {
     const eventToUpdate: EventUpdateBdDTO = {
       id,
       title,
@@ -96,7 +96,7 @@ export const eventsService = {
       coverPhoto,
     };
 
-    if (photoFiles.length) {
+    if (photoFiles?.length) {
       const event = await this.findEvent(id);
 
       for (const photo of event.photos) {

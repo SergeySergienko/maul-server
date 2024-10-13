@@ -19,3 +19,15 @@ export type TeamMemberOutputDTO = {
   createdAt: Date;
   updatedAt?: Date;
 };
+
+export type TeamMemberUpdateDTO = {
+  id: string;
+  name: string;
+  position: keyof typeof PositionModel;
+  photo?: Express.Multer.File;
+  slogan: string;
+};
+
+export type TeamMemberUpdateBdDTO = Omit<TeamMemberUpdateDTO, 'photo'> & {
+  photo?: string;
+};

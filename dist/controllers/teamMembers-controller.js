@@ -57,5 +57,35 @@ exports.teamMembersController = {
             }
         });
     },
+    updateTeamMember(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, name, position, slogan } = req.body;
+                const photo = req.file;
+                const teamMember = yield services_1.teamMembersService.updateTeamMember({
+                    id,
+                    name,
+                    position,
+                    photo,
+                    slogan,
+                });
+                return res.json(teamMember);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    },
+    deleteTeamMember(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const id = yield services_1.teamMembersService.deleteTeamMember(req.params.id);
+                return res.json({ id, message: 'Team member was deleted successfully' });
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    },
 };
 //# sourceMappingURL=teamMembers-controller.js.map
