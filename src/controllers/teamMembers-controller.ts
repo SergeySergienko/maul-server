@@ -65,6 +65,21 @@ export const teamMembersController = {
     }
   },
 
+  async activateTeamMember(
+    req: RequestWithParams<IdParamsDTO>,
+    res: Response<TeamMemberOutputDTO>,
+    next: NextFunction
+  ) {
+    try {
+      const teamMember = await teamMembersService.activateTeamMember(
+        req.params.id
+      );
+      return res.json(teamMember);
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async updateTeamMember(
     req: RequestWithBody<TeamMemberUpdateDTO>,
     res: Response<TeamMemberOutputDTO>,

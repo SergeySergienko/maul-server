@@ -26,6 +26,16 @@ export const teamMembersRepo = {
     return await teamMemberCollection.insertOne(teamMember);
   },
 
+  async activateTeamMember(id: string) {
+    const result = await teamMemberCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { isActivated: true, updatedAt: new Date() } },
+      { returnDocument: 'after' }
+    );
+
+    return result.value;
+  },
+
   async updateTeamMember(updateData: TeamMemberUpdateBdDTO) {
     const { id, ...fieldsToUpdate } = updateData;
 

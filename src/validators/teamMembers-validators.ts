@@ -13,6 +13,7 @@ import {
 export const teamMembersValidators = {
   'GET /api/team-members/': [limitRule, sortRule],
   'GET /api/team-members/:id': [paramIdRule],
+  'PATCH /api/team-members/:id': [paramIdRule],
   'POST /api/team-members/': [
     bodyUserIdRule,
     bodyNameRule,

@@ -44,6 +44,12 @@ exports.teamMembersRepo = {
             return yield _1.teamMemberCollection.insertOne(teamMember);
         });
     },
+    activateTeamMember(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield _1.teamMemberCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: { isActivated: true, updatedAt: new Date() } }, { returnDocument: 'after' });
+            return result.value;
+        });
+    },
     updateTeamMember(updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = updateData, fieldsToUpdate = __rest(updateData, ["id"]);

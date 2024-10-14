@@ -5,6 +5,7 @@ const _1 = require(".");
 exports.teamMembersValidators = {
     'GET /api/team-members/': [_1.limitRule, _1.sortRule],
     'GET /api/team-members/:id': [_1.paramIdRule],
+    'PATCH /api/team-members/:id': [_1.paramIdRule],
     'POST /api/team-members/': [
         _1.bodyUserIdRule,
         _1.bodyNameRule,

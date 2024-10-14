@@ -41,15 +41,36 @@ class MailService {
             }
         });
     }
-    sendTeamMemberActivationMail(to, teamMemberId) {
+    sendTeamMembershipRequestMail(to, teamMemberId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 yield this.transport.sendMail({
                     from: 'no-reply/keine Antwort <maul-server>',
                     to,
-                    subject: 'Team membership activation / Aktivierung der Teammitgliedschaft',
+                    subject: 'Team membership request / Teammitgliedschaftsanfrage',
                     html: `Activation request received from the candidate with team member id: ${teamMemberId} /
-         Aktivierungsanforderung vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+         Aktivierungsanfrage vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+                });
+            }
+            catch (error) {
+                throw api_error_1.ApiError.ServerError('Mail Service Error');
+            }
+        });
+    }
+    sendTeamMembershipApprovedMail(to, teamMemberName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.transport.sendMail({
+                    from: 'no-reply/keine Antwort <maul-server>',
+                    to,
+                    subject: 'Team membership approved / Teammitgliedschaft genehmigt',
+                    html: `Hello, ${teamMemberName}!\n
+We are pleased to inform you that your application has been approved!
+Welcome to our team!
+\n\n
+Hallo, ${teamMemberName}!\n
+Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Bewerbung genehmigt wurde!
+Willkommen in unserem Team!`,
                 });
             }
             catch (error) {

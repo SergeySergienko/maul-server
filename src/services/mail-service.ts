@@ -26,15 +26,32 @@ class MailService {
       throw ApiError.ServerError('Mail Service Error');
     }
   }
-  async sendTeamMemberActivationMail(to: string, teamMemberId: string) {
+  async sendTeamMembershipRequestMail(to: string, teamMemberId: string) {
     try {
       await this.transport.sendMail({
         from: 'no-reply/keine Antwort <maul-server>',
         to,
-        subject:
-          'Team membership activation / Aktivierung der Teammitgliedschaft',
+        subject: 'Team membership request / Teammitgliedschaftsanfrage',
         html: `Activation request received from the candidate with team member id: ${teamMemberId} /
-         Aktivierungsanforderung vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+         Aktivierungsanfrage vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}`,
+      });
+    } catch (error) {
+      throw ApiError.ServerError('Mail Service Error');
+    }
+  }
+  async sendTeamMembershipApprovedMail(to: string, teamMemberName: string) {
+    try {
+      await this.transport.sendMail({
+        from: 'no-reply/keine Antwort <maul-server>',
+        to,
+        subject: 'Team membership approved / Teammitgliedschaft genehmigt',
+        html: `Hello, ${teamMemberName}!\n
+We are pleased to inform you that your application has been approved!
+Welcome to our team!
+\n\n
+Hallo, ${teamMemberName}!\n
+Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Bewerbung genehmigt wurde!
+Willkommen in unserem Team!`,
       });
     } catch (error) {
       throw ApiError.ServerError('Mail Service Error');

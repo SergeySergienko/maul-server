@@ -9,23 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUserCreateMiddleware = void 0;
+exports.checkTeamMemberActivateMiddleware = void 0;
+const mongodb_1 = require("mongodb");
 const api_error_1 = require("../exceptions/api-error");
 const repositories_1 = require("../repositories");
-const checkUserCreateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const checkTeamMemberActivateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { email } = req.body;
-        const candidate = yield repositories_1.usersRepo.findUser('email', email);
-        if (candidate) {
-            throw api_error_1.ApiError.BadRequest(409, `User with email ${email} already exists`, [
+        const { id } = req.params;
+        const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('_id', new mongodb_1.ObjectId(id));
+        if (!teamMember) {
+            throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
                 {
                     type: 'field',
-                    value: email,
-                    msg: 'email address must be unique',
-                    path: 'email',
-                    location: 'body',
+                    value: id,
+                    msg: 'not found',
+                    path: 'id',
+                    location: 'params',
                 },
             ]);
+        }
+        if (teamMember.isActivated) {
+            throw api_error_1.ApiError.BadRequest(409, `Team member with user ID ${id} already activated`);
         }
         next();
     }
@@ -33,5 +37,5 @@ const checkUserCreateMiddleware = (req, res, next) => __awaiter(void 0, void 0, 
         return next(error);
     }
 });
-exports.checkUserCreateMiddleware = checkUserCreateMiddleware;
-//# sourceMappingURL=checkUserCreateMiddleware%20copy.js.map
+exports.checkTeamMemberActivateMiddleware = checkTeamMemberActivateMiddleware;
+//# sourceMappingURL=checkTeamMemberActivateMiddleware.js.map

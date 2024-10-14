@@ -1,6 +1,6 @@
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { TeamMemberModel } from '../models';
-import { teamMembersRepo } from '../repositories';
+import { teamMembersRepo, usersRepo } from '../repositories';
 import { storageService, usersService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage, teamMemberModelMapper } from '../utils';
@@ -86,7 +86,7 @@ export const teamMembersService = {
     const admins = await usersService.findUsers({ role: 'ADMIN' });
     await Promise.all(
       admins.map((admin) =>
-        mailService.sendTeamMemberActivationMail(
+        mailService.sendTeamMembershipRequestMail(
           admin.email,
           insertedId.toString()
         )
@@ -94,6 +94,28 @@ export const teamMembersService = {
     );
 
     return teamMemberModelMapper({ ...newTeamMember, _id: insertedId });
+  },
+
+  async activateTeamMember(id: string) {
+    const activatedTeamMember = await teamMembersRepo.activateTeamMember(id);
+    if (!activatedTeamMember) {
+      throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
+    }
+
+    // todo: create usersService.findUser
+    const user = await usersRepo.findUser('id', activatedTeamMember.userId);
+    if (!user) {
+      throw ApiError.NotFound(
+        `User with id: ${activatedTeamMember.userId} wasn't found`
+      );
+    }
+
+    await mailService.sendTeamMembershipApprovedMail(
+      user.email,
+      activatedTeamMember.name
+    );
+
+    return teamMemberModelMapper(activatedTeamMember);
   },
 
   async updateTeamMember({

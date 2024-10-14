@@ -2,6 +2,7 @@ import express from 'express';
 import { teamMembersController } from '../controllers';
 import {
   authMiddleware,
+  checkTeamMemberActivateMiddleware,
   checkTeamMemberCreateMiddleware,
   multerMiddleware,
 } from '../middleware';
@@ -26,6 +27,13 @@ teamMembersRouter.post(
   validateRequest(teamMembersValidators),
   checkTeamMemberCreateMiddleware,
   teamMembersController.createTeamMember
+);
+teamMembersRouter.patch(
+  '/:id',
+  authMiddleware('ADMIN'),
+  validateRequest(teamMembersValidators),
+  checkTeamMemberActivateMiddleware,
+  teamMembersController.activateTeamMember
 );
 teamMembersRouter.put(
   '/',
