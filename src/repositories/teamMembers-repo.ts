@@ -1,13 +1,17 @@
 import { FindOptions, ObjectId, WithId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
-import { QueryDTO, TeamMemberUpdateBdDTO } from '../types';
+import { QueryDTO, TeamMemberFindDTO, TeamMemberUpdateBdDTO } from '../types';
 
 export const teamMembersRepo = {
-  async findTeamMember<T extends keyof WithId<TeamMemberModel>>(
+  async findTeamMember<T extends keyof TeamMemberFindDTO>(
     field: T,
-    value: WithId<TeamMemberModel>[T]
+    value: TeamMemberFindDTO[T]
   ) {
+    if (field === 'id') {
+      return await teamMemberCollection.findOne({ _id: new ObjectId(value) });
+    }
+
     return await teamMemberCollection.findOne({ [field]: value });
   },
 

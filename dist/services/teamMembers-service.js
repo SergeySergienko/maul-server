@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.teamMembersService = void 0;
-const mongodb_1 = require("mongodb");
 const repositories_1 = require("../repositories");
 const _1 = require(".");
 const api_error_1 = require("../exceptions/api-error");
@@ -24,7 +23,7 @@ const containerName = process.env
 exports.teamMembersService = {
     findTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('_id', new mongodb_1.ObjectId(id));
+            const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('id', id);
             if (!teamMember) {
                 throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
                     {
@@ -33,6 +32,23 @@ exports.teamMembersService = {
                         msg: 'not found',
                         path: 'id',
                         location: 'params',
+                    },
+                ]);
+            }
+            return (0, utils_1.teamMemberModelMapper)(teamMember);
+        });
+    },
+    findTeamMemberByUserId(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('userId', userId);
+            if (!teamMember) {
+                throw api_error_1.ApiError.NotFound(`Team member with user ID: ${userId} wasn't found`, [
+                    {
+                        type: 'field',
+                        value: userId,
+                        msg: 'not found',
+                        path: 'userId',
+                        location: 'query',
                     },
                 ]);
             }
@@ -72,6 +88,7 @@ exports.teamMembersService = {
             const { insertedId } = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
+            yield _1.usersService.updateUser({ id: userId, role: 'CANDIDATE' });
             const admins = yield _1.usersService.findUsers({ role: 'ADMIN' });
             yield Promise.all(admins.map((admin) => mail_service_1.default.sendTeamMembershipRequestMail(admin.email, insertedId.toString())));
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
@@ -84,10 +101,12 @@ exports.teamMembersService = {
                 throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
             }
             // todo: create usersService.findUser
-            const user = yield repositories_1.usersRepo.findUser('id', activatedTeamMember.userId);
+            const userId = activatedTeamMember.userId;
+            const user = yield repositories_1.usersRepo.findUser('id', userId);
             if (!user) {
-                throw api_error_1.ApiError.NotFound(`User with id: ${activatedTeamMember.userId} wasn't found`);
+                throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
+            yield repositories_1.usersRepo.updateUser({ id: userId, role: 'MEMBER' });
             yield mail_service_1.default.sendTeamMembershipApprovedMail(user.email, activatedTeamMember.name);
             return (0, utils_1.teamMemberModelMapper)(activatedTeamMember);
         });

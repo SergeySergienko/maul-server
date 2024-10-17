@@ -42,6 +42,10 @@ export const bodyUserIdRule = body('userId')
   .isMongoId()
   .withMessage('userId must have mongoId format');
 
+export const queryUserIdRule = query('userId')
+  .isMongoId()
+  .withMessage('userId must have mongoId format');
+
 export const bodyNameRule = body('name')
   .trim()
   .notEmpty()

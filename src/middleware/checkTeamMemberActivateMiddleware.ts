@@ -11,10 +11,7 @@ export const checkTeamMemberActivateMiddleware = async (
 ) => {
   try {
     const { id } = req.params;
-    const teamMember = await teamMembersRepo.findTeamMember(
-      '_id',
-      new ObjectId(id)
-    );
+    const teamMember = await teamMembersRepo.findTeamMember('id', id);
     if (!teamMember) {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
         {

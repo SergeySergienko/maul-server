@@ -31,3 +31,9 @@ export type TeamMemberUpdateDTO = {
 export type TeamMemberUpdateBdDTO = Omit<TeamMemberUpdateDTO, 'photo'> & {
   photo?: string;
 };
+
+export type TeamMemberFindDTO = {
+  id: string;
+  userId: string;
+  name: string;
+};

@@ -23,6 +23,17 @@ exports.teamMembersController = {
             }
         });
     },
+    findTeamMemberByUserId(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const teamMember = yield services_1.teamMembersService.findTeamMemberByUserId(req.query.userId);
+                return res.json(teamMember);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    },
     findTeamMembers(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const { limit, sort } = req.query;

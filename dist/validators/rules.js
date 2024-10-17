@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.bodySloganRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.bodyUserIdRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
+exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.bodySloganRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.queryUserIdRule = exports.bodyUserIdRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
 const express_validator_1 = require("express-validator");
 const constants_1 = require("../constants");
 exports.limitRule = (0, express_validator_1.query)('limit')
@@ -28,6 +28,9 @@ exports.bodyPasswordRule = (0, express_validator_1.body)('password', 'the passwo
     .isLength({ min: 4, max: 10 });
 // team-member rules
 exports.bodyUserIdRule = (0, express_validator_1.body)('userId')
+    .isMongoId()
+    .withMessage('userId must have mongoId format');
+exports.queryUserIdRule = (0, express_validator_1.query)('userId')
     .isMongoId()
     .withMessage('userId must have mongoId format');
 exports.bodyNameRule = (0, express_validator_1.body)('name')

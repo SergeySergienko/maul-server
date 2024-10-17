@@ -1,6 +1,4 @@
 import { Response, NextFunction } from 'express';
-import { WithId } from 'mongodb';
-import { TeamMemberModel } from '../models';
 import { teamMembersService } from '../services';
 import {
   RequestWithBody,
@@ -11,6 +9,7 @@ import {
   QueryDTO,
   TeamMemberOutputDTO,
   TeamMemberUpdateDTO,
+  TeamMemberFindDTO,
 } from '../types';
 
 export const teamMembersController = {
@@ -21,6 +20,21 @@ export const teamMembersController = {
   ) {
     try {
       const teamMember = await teamMembersService.findTeamMember(req.params.id);
+      return res.json(teamMember);
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  async findTeamMemberByUserId(
+    req: RequestWithQuery<TeamMemberFindDTO>,
+    res: Response<TeamMemberOutputDTO>,
+    next: NextFunction
+  ) {
+    try {
+      const teamMember = await teamMembersService.findTeamMemberByUserId(
+        req.query.userId
+      );
       return res.json(teamMember);
     } catch (error) {
       next(error);

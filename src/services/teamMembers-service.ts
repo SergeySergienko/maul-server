@@ -18,10 +18,7 @@ const containerName = process.env
 
 export const teamMembersService = {
   async findTeamMember(id: string) {
-    const teamMember = await teamMembersRepo.findTeamMember(
-      '_id',
-      new ObjectId(id)
-    );
+    const teamMember = await teamMembersRepo.findTeamMember('id', id);
     if (!teamMember) {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
         {
@@ -32,6 +29,26 @@ export const teamMembersService = {
           location: 'params',
         },
       ]);
+    }
+
+    return teamMemberModelMapper(teamMember);
+  },
+
+  async findTeamMemberByUserId(userId: string) {
+    const teamMember = await teamMembersRepo.findTeamMember('userId', userId);
+    if (!teamMember) {
+      throw ApiError.NotFound(
+        `Team member with user ID: ${userId} wasn't found`,
+        [
+          {
+            type: 'field',
+            value: userId,
+            msg: 'not found',
+            path: 'userId',
+            location: 'query',
+          },
+        ]
+      );
     }
 
     return teamMemberModelMapper(teamMember);
@@ -83,6 +100,8 @@ export const teamMembersService = {
     );
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
 
+    await usersService.updateUser({ id: userId, role: 'CANDIDATE' });
+
     const admins = await usersService.findUsers({ role: 'ADMIN' });
     await Promise.all(
       admins.map((admin) =>
@@ -103,12 +122,12 @@ export const teamMembersService = {
     }
 
     // todo: create usersService.findUser
-    const user = await usersRepo.findUser('id', activatedTeamMember.userId);
+    const userId = activatedTeamMember.userId;
+    const user = await usersRepo.findUser('id', userId);
     if (!user) {
-      throw ApiError.NotFound(
-        `User with id: ${activatedTeamMember.userId} wasn't found`
-      );
+      throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
+    await usersRepo.updateUser({ id: userId, role: 'MEMBER' });
 
     await mailService.sendTeamMembershipApprovedMail(
       user.email,

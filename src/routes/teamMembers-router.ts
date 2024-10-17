@@ -16,6 +16,11 @@ teamMembersRouter.get(
   teamMembersController.findTeamMembers
 );
 teamMembersRouter.get(
+  '/search',
+  validateRequest(teamMembersValidators),
+  teamMembersController.findTeamMemberByUserId
+);
+teamMembersRouter.get(
   '/:id',
   validateRequest(teamMembersValidators),
   teamMembersController.findTeamMember
@@ -37,7 +42,7 @@ teamMembersRouter.patch(
 );
 teamMembersRouter.put(
   '/',
-  authMiddleware('ADMIN'),
+  authMiddleware('MEMBER'),
   multerMiddleware('single'),
   validateRequest(teamMembersValidators),
   teamMembersController.updateTeamMember

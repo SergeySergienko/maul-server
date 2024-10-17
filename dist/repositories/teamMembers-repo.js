@@ -26,6 +26,9 @@ const _1 = require(".");
 exports.teamMembersRepo = {
     findTeamMember(field, value) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (field === 'id') {
+                return yield _1.teamMemberCollection.findOne({ _id: new mongodb_1.ObjectId(value) });
+            }
             return yield _1.teamMemberCollection.findOne({ [field]: value });
         });
     },
