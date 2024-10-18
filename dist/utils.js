@@ -78,8 +78,8 @@ const eventModelMapper = (event) => {
     return Object.assign({ id: _id.toString() }, rest);
 };
 exports.eventModelMapper = eventModelMapper;
-const teamMemberModelMapper = (event) => {
-    const { _id } = event, rest = __rest(event, ["_id"]);
+const teamMemberModelMapper = (teamMember) => {
+    const { _id } = teamMember, rest = __rest(teamMember, ["_id"]);
     return Object.assign({ id: _id.toString() }, rest);
 };
 exports.teamMemberModelMapper = teamMemberModelMapper;

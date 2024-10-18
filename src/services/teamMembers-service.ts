@@ -36,20 +36,7 @@ export const teamMembersService = {
 
   async findTeamMemberByUserId(userId: string) {
     const teamMember = await teamMembersRepo.findTeamMember('userId', userId);
-    if (!teamMember) {
-      throw ApiError.NotFound(
-        `Team member with user ID: ${userId} wasn't found`,
-        [
-          {
-            type: 'field',
-            value: userId,
-            msg: 'not found',
-            path: 'userId',
-            location: 'query',
-          },
-        ]
-      );
-    }
+    if (!teamMember) return;
 
     return teamMemberModelMapper(teamMember);
   },

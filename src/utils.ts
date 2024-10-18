@@ -78,9 +78,9 @@ export const eventModelMapper = (event: WithId<EventModel>): EventOutputDTO => {
 };
 
 export const teamMemberModelMapper = (
-  event: WithId<TeamMemberModel>
+  teamMember: WithId<TeamMemberModel>
 ): TeamMemberOutputDTO => {
-  const { _id, ...rest } = event;
+  const { _id, ...rest } = teamMember;
   return { id: _id.toString(), ...rest };
 };
 

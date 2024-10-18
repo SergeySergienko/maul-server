@@ -41,17 +41,8 @@ exports.teamMembersService = {
     findTeamMemberByUserId(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             const teamMember = yield repositories_1.teamMembersRepo.findTeamMember('userId', userId);
-            if (!teamMember) {
-                throw api_error_1.ApiError.NotFound(`Team member with user ID: ${userId} wasn't found`, [
-                    {
-                        type: 'field',
-                        value: userId,
-                        msg: 'not found',
-                        path: 'userId',
-                        location: 'query',
-                    },
-                ]);
-            }
+            if (!teamMember)
+                return;
             return (0, utils_1.teamMemberModelMapper)(teamMember);
         });
     },
