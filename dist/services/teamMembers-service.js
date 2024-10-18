@@ -146,6 +146,13 @@ exports.teamMembersService = {
             if (deletedCount !== 1) {
                 throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
             }
+            const userId = teamMemberToDelete.userId;
+            const user = yield repositories_1.usersRepo.findUser('id', userId);
+            if (!user) {
+                throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
+            }
+            yield repositories_1.usersRepo.updateUser({ id: userId, role: 'USER' });
+            yield mail_service_1.default.sendTeamMembershipTerminatedMail(user.email, teamMemberToDelete.name);
             return id;
         });
     },

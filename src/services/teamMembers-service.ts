@@ -195,6 +195,18 @@ export const teamMembersService = {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
     }
 
+    const userId = teamMemberToDelete.userId;
+    const user = await usersRepo.findUser('id', userId);
+    if (!user) {
+      throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
+    }
+    await usersRepo.updateUser({ id: userId, role: 'USER' });
+
+    await mailService.sendTeamMembershipTerminatedMail(
+      user.email,
+      teamMemberToDelete.name
+    );
+
     return id;
   },
 };

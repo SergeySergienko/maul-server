@@ -78,6 +78,25 @@ Willkommen in unserem Team!`,
             }
         });
     }
+    sendTeamMembershipTerminatedMail(to, teamMemberName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.transport.sendMail({
+                    from: 'no-reply/keine Antwort <maul-server>',
+                    to,
+                    subject: 'Team membership terminated / Teammitgliedschaft beendet',
+                    html: `Hello, ${teamMemberName}!
+We inform you that your membership in the team has been terminated. All the best.
+
+Hallo, ${teamMemberName}!
+Wir informieren Sie, dass Ihre Mitgliedschaft im Team beendet wurde. Alles Gute.`,
+                });
+            }
+            catch (error) {
+                throw api_error_1.ApiError.ServerError('Mail Service Error');
+            }
+        });
+    }
 }
 exports.default = new MailService();
 //# sourceMappingURL=mail-service.js.map

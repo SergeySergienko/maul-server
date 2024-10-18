@@ -57,6 +57,22 @@ Willkommen in unserem Team!`,
       throw ApiError.ServerError('Mail Service Error');
     }
   }
+  async sendTeamMembershipTerminatedMail(to: string, teamMemberName: string) {
+    try {
+      await this.transport.sendMail({
+        from: 'no-reply/keine Antwort <maul-server>',
+        to,
+        subject: 'Team membership terminated / Teammitgliedschaft beendet',
+        html: `Hello, ${teamMemberName}!
+We inform you that your membership in the team has been terminated. All the best.
+
+Hallo, ${teamMemberName}!
+Wir informieren Sie, dass Ihre Mitgliedschaft im Team beendet wurde. Alles Gute.`,
+      });
+    } catch (error) {
+      throw ApiError.ServerError('Mail Service Error');
+    }
+  }
 }
 
 export default new MailService();
