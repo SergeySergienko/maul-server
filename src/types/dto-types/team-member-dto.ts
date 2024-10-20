@@ -1,4 +1,4 @@
-import { PositionModel } from '../../models';
+import { PositionModel, TeamRoleModel } from '../../models';
 
 export type TeamMemberInputDTO = {
   userId: string;
@@ -18,14 +18,16 @@ export type TeamMemberOutputDTO = {
   isActivated: boolean;
   createdAt: Date;
   updatedAt?: Date;
+  teamRole?: keyof typeof TeamRoleModel;
 };
 
 export type TeamMemberUpdateDTO = {
   id: string;
-  name: string;
-  position: keyof typeof PositionModel;
+  name?: string;
+  position?: keyof typeof PositionModel;
   photo?: Express.Multer.File;
-  slogan: string;
+  slogan?: string;
+  teamRole?: keyof typeof TeamRoleModel;
 };
 
 export type TeamMemberUpdateBdDTO = Omit<TeamMemberUpdateDTO, 'photo'> & {

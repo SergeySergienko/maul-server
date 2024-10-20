@@ -7,6 +7,12 @@ export interface TeamMemberModel {
   isActivated: boolean;
   createdAt: Date;
   updatedAt?: Date;
+  teamRole?: keyof typeof TeamRoleModel;
+}
+
+export enum TeamRoleModel {
+  CANDIDATE,
+  MEMBER,
 }
 
 export enum PositionModel {

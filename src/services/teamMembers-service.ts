@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { TeamMemberModel } from '../models';
 import { teamMembersRepo, usersRepo } from '../repositories';
 import { storageService, usersService } from '.';
@@ -80,14 +79,13 @@ export const teamMembersService = {
       photo: blobFile.url,
       slogan,
       isActivated: false,
+      teamRole: 'CANDIDATE',
       createdAt: new Date(),
     };
     const { insertedId } = await teamMembersRepo.createTeamMember(
       newTeamMember
     );
     if (!insertedId) throw ApiError.ServerError('Internal Server Error');
-
-    await usersService.updateUser({ id: userId, role: 'CANDIDATE' });
 
     const admins = await usersService.findUsers({ role: 'ADMIN' });
     await Promise.all(
@@ -114,8 +112,6 @@ export const teamMembersService = {
     if (!user) {
       throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
-    await usersRepo.updateUser({ id: userId, role: 'MEMBER' });
-
     await mailService.sendTeamMembershipApprovedMail(
       user.email,
       activatedTeamMember.name
@@ -168,10 +164,8 @@ export const teamMembersService = {
   },
 
   async deleteTeamMember(id: string) {
-    const teamMemberToDelete = await this.findTeamMember(id);
-    const res = await storageService.deleteFileFromAzureStorage(
-      teamMemberToDelete.photo
-    );
+    const { userId, name, photo } = await this.findTeamMember(id);
+    const res = await storageService.deleteFileFromAzureStorage(photo);
 
     if (res.errorCode) {
       throw ApiError.ServerError('Can not delete blob file');
@@ -182,17 +176,12 @@ export const teamMembersService = {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
     }
 
-    const userId = teamMemberToDelete.userId;
     const user = await usersRepo.findUser('id', userId);
     if (!user) {
       throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
-    await usersRepo.updateUser({ id: userId, role: 'USER' });
 
-    await mailService.sendTeamMembershipTerminatedMail(
-      user.email,
-      teamMemberToDelete.name
-    );
+    await mailService.sendTeamMembershipTerminatedMail(user.email, name);
 
     return id;
   },

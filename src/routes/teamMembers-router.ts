@@ -42,7 +42,7 @@ teamMembersRouter.patch(
 );
 teamMembersRouter.put(
   '/',
-  authMiddleware('MEMBER'),
+  authMiddleware('USER'),
   multerMiddleware('single'),
   validateRequest(teamMembersValidators),
   teamMembersController.updateTeamMember

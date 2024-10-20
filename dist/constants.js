@@ -7,7 +7,6 @@ exports.IMAGE_HEIGHT = 288;
 exports.PHOTO_ARRAY_LIMIT = 20;
 exports.ALLOWED_ROLES = [
     'USER',
-    'MEMBER',
     'ADMIN',
 ];
 exports.POSITIONS = [

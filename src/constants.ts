@@ -8,7 +8,6 @@ export const PHOTO_ARRAY_LIMIT = 20;
 
 export const ALLOWED_ROLES: Array<Exclude<keyof typeof RoleModel, 'OWNER'>> = [
   'USER',
-  'MEMBER',
   'ADMIN',
 ];
 

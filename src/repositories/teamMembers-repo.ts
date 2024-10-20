@@ -1,4 +1,4 @@
-import { FindOptions, ObjectId, WithId } from 'mongodb';
+import { FindOptions, ObjectId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
 import { QueryDTO, TeamMemberFindDTO, TeamMemberUpdateBdDTO } from '../types';
@@ -33,7 +33,9 @@ export const teamMembersRepo = {
   async activateTeamMember(id: string) {
     const result = await teamMemberCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: { isActivated: true, updatedAt: new Date() } },
+      {
+        $set: { isActivated: true, teamRole: 'MEMBER', updatedAt: new Date() },
+      },
       { returnDocument: 'after' }
     );
 

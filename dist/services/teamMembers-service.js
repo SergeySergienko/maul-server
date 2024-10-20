@@ -74,12 +74,12 @@ exports.teamMembersService = {
                 photo: blobFile.url,
                 slogan,
                 isActivated: false,
+                teamRole: 'CANDIDATE',
                 createdAt: new Date(),
             };
             const { insertedId } = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
-            yield _1.usersService.updateUser({ id: userId, role: 'CANDIDATE' });
             const admins = yield _1.usersService.findUsers({ role: 'ADMIN' });
             yield Promise.all(admins.map((admin) => mail_service_1.default.sendTeamMembershipRequestMail(admin.email, insertedId.toString())));
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
@@ -97,7 +97,6 @@ exports.teamMembersService = {
             if (!user) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
-            yield repositories_1.usersRepo.updateUser({ id: userId, role: 'MEMBER' });
             yield mail_service_1.default.sendTeamMembershipApprovedMail(user.email, activatedTeamMember.name);
             return (0, utils_1.teamMemberModelMapper)(activatedTeamMember);
         });
@@ -128,8 +127,8 @@ exports.teamMembersService = {
     },
     deleteTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const teamMemberToDelete = yield this.findTeamMember(id);
-            const res = yield _1.storageService.deleteFileFromAzureStorage(teamMemberToDelete.photo);
+            const { userId, name, photo } = yield this.findTeamMember(id);
+            const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
             if (res.errorCode) {
                 throw api_error_1.ApiError.ServerError('Can not delete blob file');
             }
@@ -137,13 +136,11 @@ exports.teamMembersService = {
             if (deletedCount !== 1) {
                 throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
             }
-            const userId = teamMemberToDelete.userId;
             const user = yield repositories_1.usersRepo.findUser('id', userId);
             if (!user) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
-            yield repositories_1.usersRepo.updateUser({ id: userId, role: 'USER' });
-            yield mail_service_1.default.sendTeamMembershipTerminatedMail(user.email, teamMemberToDelete.name);
+            yield mail_service_1.default.sendTeamMembershipTerminatedMail(user.email, name);
             return id;
         });
     },

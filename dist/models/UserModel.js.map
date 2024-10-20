@@ -1,1 +1,1 @@
-{"version":3,"file":"UserModel.js","sourceRoot":"","sources":["../../src/models/UserModel.ts"],"names":[],"mappings":";;;AASA,IAAY,SAMX;AAND,WAAY,SAAS;IACnB,yCAAI,CAAA;IACJ,mDAAS,CAAA;IACT,6CAAM,CAAA;IACN,2CAAK,CAAA;IACL,2CAAK,CAAA;AACP,CAAC,EANW,SAAS,yBAAT,SAAS,QAMpB"}
+{"version":3,"file":"UserModel.js","sourceRoot":"","sources":["../../src/models/UserModel.ts"],"names":[],"mappings":";;;AASA,IAAY,SAIX;AAJD,WAAY,SAAS;IACnB,yCAAI,CAAA;IACJ,2CAAK,CAAA;IACL,2CAAK,CAAA;AACP,CAAC,EAJW,SAAS,yBAAT,SAAS,QAIpB"}

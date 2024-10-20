@@ -9,8 +9,6 @@ export interface UserModel {
 
 export enum RoleModel {
   USER,
-  CANDIDATE,
-  MEMBER,
   ADMIN,
   OWNER,
 }
