@@ -14,12 +14,7 @@ exports.teamMembersValidators = {
         _1.uploadFileRule,
         _1.bodySloganRule,
     ],
-    'PUT /api/team-members/': [
-        _1.bodyIdRule,
-        _1.bodyNameRule,
-        _1.bodyPositionRule,
-        _1.bodySloganRule,
-    ],
+    'PUT /api/team-members/': [_1.bodyIdRule],
     'DELETE /api/team-members/:id': [_1.paramIdRule],
 };
 //# sourceMappingURL=teamMembers-validators.js.map

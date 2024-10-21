@@ -45,9 +45,19 @@ export const teamMembersRepo = {
   async updateTeamMember(updateData: TeamMemberUpdateBdDTO) {
     const { id, ...fieldsToUpdate } = updateData;
 
+    const updateFields = Object.entries(fieldsToUpdate).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          (acc as any)[key] = value;
+        }
+        return acc;
+      },
+      {} as Partial<TeamMemberUpdateBdDTO>
+    );
+
     const result = await teamMemberCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: { ...fieldsToUpdate, updatedAt: new Date() } },
+      { $set: { ...updateFields, updatedAt: new Date() } },
       { returnDocument: 'after' }
     );
 

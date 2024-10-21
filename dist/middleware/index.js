@@ -20,6 +20,7 @@ __exportStar(require("./validationResultMiddleware"), exports);
 __exportStar(require("./checkEventCreateMiddleware"), exports);
 __exportStar(require("./checkTeamMemberActivateMiddleware"), exports);
 __exportStar(require("./checkTeamMemberCreateMiddleware"), exports);
+__exportStar(require("./checkTeamMemberUpdateMiddleware"), exports);
 __exportStar(require("./checkUserCreateMiddleware"), exports);
 __exportStar(require("./checkUserDeleteMiddleware"), exports);
 __exportStar(require("./checkUserUpdateMiddleware"), exports);

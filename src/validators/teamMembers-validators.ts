@@ -23,11 +23,6 @@ export const teamMembersValidators = {
     uploadFileRule,
     bodySloganRule,
   ],
-  'PUT /api/team-members/': [
-    bodyIdRule,
-    bodyNameRule,
-    bodyPositionRule,
-    bodySloganRule,
-  ],
+  'PUT /api/team-members/': [bodyIdRule],
   'DELETE /api/team-members/:id': [paramIdRule],
 };

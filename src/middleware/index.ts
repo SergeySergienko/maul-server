@@ -4,6 +4,7 @@ export * from './validationResultMiddleware';
 export * from './checkEventCreateMiddleware';
 export * from './checkTeamMemberActivateMiddleware';
 export * from './checkTeamMemberCreateMiddleware';
+export * from './checkTeamMemberUpdateMiddleware';
 export * from './checkUserCreateMiddleware';
 export * from './checkUserDeleteMiddleware';
 export * from './checkUserUpdateMiddleware';

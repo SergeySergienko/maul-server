@@ -58,7 +58,13 @@ exports.teamMembersRepo = {
     updateTeamMember(updateData) {
         return __awaiter(this, void 0, void 0, function* () {
             const { id } = updateData, fieldsToUpdate = __rest(updateData, ["id"]);
-            const result = yield _1.teamMemberCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, fieldsToUpdate), { updatedAt: new Date() }) }, { returnDocument: 'after' });
+            const updateFields = Object.entries(fieldsToUpdate).reduce((acc, [key, value]) => {
+                if (value !== undefined) {
+                    acc[key] = value;
+                }
+                return acc;
+            }, {});
+            const result = yield _1.teamMemberCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, updateFields), { updatedAt: new Date() }) }, { returnDocument: 'after' });
             return result.value;
         });
     },

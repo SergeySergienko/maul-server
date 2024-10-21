@@ -37,6 +37,6 @@ exports.teamMembersRouter.get('/search', (0, validators_1.default)(validators_1.
 exports.teamMembersRouter.get('/:id', (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.findTeamMember);
 exports.teamMembersRouter.post('/', (0, middleware_1.authMiddleware)('USER'), (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.teamMembersValidators), middleware_1.checkTeamMemberCreateMiddleware, controllers_1.teamMembersController.createTeamMember);
 exports.teamMembersRouter.patch('/:id', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.teamMembersValidators), middleware_1.checkTeamMemberActivateMiddleware, controllers_1.teamMembersController.activateTeamMember);
-exports.teamMembersRouter.put('/', (0, middleware_1.authMiddleware)('USER'), (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.updateTeamMember);
+exports.teamMembersRouter.put('/', (0, middleware_1.authMiddleware)('USER'), (0, middleware_1.multerMiddleware)('single'), (0, validators_1.default)(validators_1.teamMembersValidators), middleware_1.checkTeamMemberUpdateMiddleware, controllers_1.teamMembersController.updateTeamMember);
 exports.teamMembersRouter.delete('/:id', (0, middleware_1.authMiddleware)('ADMIN'), (0, validators_1.default)(validators_1.teamMembersValidators), controllers_1.teamMembersController.deleteTeamMember);
 //# sourceMappingURL=teamMembers-router.js.map

@@ -4,6 +4,7 @@ import {
   authMiddleware,
   checkTeamMemberActivateMiddleware,
   checkTeamMemberCreateMiddleware,
+  checkTeamMemberUpdateMiddleware,
   multerMiddleware,
 } from '../middleware';
 import validateRequest, { teamMembersValidators } from '../validators';
@@ -45,6 +46,7 @@ teamMembersRouter.put(
   authMiddleware('USER'),
   multerMiddleware('single'),
   validateRequest(teamMembersValidators),
+  checkTeamMemberUpdateMiddleware,
   teamMembersController.updateTeamMember
 );
 teamMembersRouter.delete(
