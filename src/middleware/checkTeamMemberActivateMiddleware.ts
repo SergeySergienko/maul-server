@@ -24,7 +24,7 @@ export const checkTeamMemberActivateMiddleware = async (
       ]);
     }
 
-    if (teamMember.isActivated) {
+    if (teamMember.teamRole === 'MEMBER') {
       throw ApiError.BadRequest(
         409,
         `Team member with user ID ${id} already activated`

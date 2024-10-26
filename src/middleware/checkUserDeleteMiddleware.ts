@@ -1,10 +1,9 @@
 import { NextFunction, Response } from 'express';
 import { ApiError } from '../exceptions/api-error';
 import { CustomJwtPayload, RoleModel } from '../models';
-import { RequestWithParams } from '../types';
+import { RequestWithParams, IdParamsDTO } from '../types';
 import { tokensService } from '../services';
 import { usersRepo } from '../repositories';
-import { IdParamsDTO } from '../types';
 
 export const checkUserDeleteMiddleware = async (
   req: RequestWithParams<IdParamsDTO>,

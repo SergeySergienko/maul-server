@@ -50,7 +50,7 @@ exports.teamMembersRepo = {
     activateTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield _1.teamMemberCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: { isActivated: true, teamRole: 'MEMBER', updatedAt: new Date() },
+                $set: { teamRole: 'MEMBER', updatedAt: new Date() },
             }, { returnDocument: 'after' });
             return result.value;
         });

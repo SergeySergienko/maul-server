@@ -4,7 +4,6 @@ export interface TeamMemberModel {
   position: keyof typeof PositionModel;
   photo: string;
   slogan: string;
-  isActivated: boolean;
   createdAt: Date;
   updatedAt?: Date;
   teamRole?: keyof typeof TeamRoleModel;

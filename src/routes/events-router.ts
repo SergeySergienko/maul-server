@@ -3,6 +3,7 @@ import { eventsController } from '../controllers';
 import {
   authMiddleware,
   checkEventCreateMiddleware,
+  checkEventDeleteMiddleware,
   multerMiddleware,
 } from '../middleware';
 import { PHOTO_ARRAY_LIMIT } from '../constants';
@@ -39,5 +40,6 @@ eventsRouter.delete(
   '/:id',
   authMiddleware('ADMIN'),
   validateRequest(eventsValidators),
+  checkEventDeleteMiddleware,
   eventsController.deleteEvent
 );

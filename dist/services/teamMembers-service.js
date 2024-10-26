@@ -73,7 +73,6 @@ exports.teamMembersService = {
                 position,
                 photo: blobFile.url,
                 slogan,
-                isActivated: false,
                 teamRole: 'CANDIDATE',
                 createdAt: new Date(),
             };
@@ -113,7 +112,7 @@ exports.teamMembersService = {
                 const teamMember = yield this.findTeamMember(id);
                 const res = yield _1.storageService.deleteFileFromAzureStorage(teamMember.photo);
                 if (res.errorCode) {
-                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                    throw api_error_1.ApiError.ServerError('Could not delete blob file');
                 }
                 const blobFile = yield _1.storageService.writeFileToAzureStorage(containerName, photo.originalname, photo.buffer);
                 teamMemberToUpdate.photo = blobFile.url;
@@ -130,7 +129,7 @@ exports.teamMembersService = {
             const { userId, name, photo } = yield this.findTeamMember(id);
             const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
             if (res.errorCode) {
-                throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                throw api_error_1.ApiError.ServerError('Could not delete blob file');
             }
             const { deletedCount } = yield repositories_1.teamMembersRepo.deleteTeamMember(id);
             if (deletedCount !== 1) {

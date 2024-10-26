@@ -8,4 +8,5 @@ export interface EventModel {
   coverPhoto?: string;
   createdAt: Date;
   updatedAt?: Date;
+  protected?: boolean;
 }

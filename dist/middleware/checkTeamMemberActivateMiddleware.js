@@ -27,7 +27,7 @@ const checkTeamMemberActivateMiddleware = (req, res, next) => __awaiter(void 0, 
                 },
             ]);
         }
-        if (teamMember.isActivated) {
+        if (teamMember.teamRole === 'MEMBER') {
             throw api_error_1.ApiError.BadRequest(409, `Team member with user ID ${id} already activated`);
         }
         next();

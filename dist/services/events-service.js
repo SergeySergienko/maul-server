@@ -84,7 +84,7 @@ exports.eventsService = {
                 for (const photo of event.photos) {
                     const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
                     if (res.errorCode) {
-                        throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                        throw api_error_1.ApiError.ServerError('Could not delete blob file');
                     }
                 }
                 const photos = [];
@@ -108,12 +108,12 @@ exports.eventsService = {
             for (const photo of eventToDelete.photos) {
                 const res = yield _1.storageService.deleteFileFromAzureStorage(photo);
                 if (res.errorCode) {
-                    throw api_error_1.ApiError.ServerError('Can not delete blob file');
+                    throw api_error_1.ApiError.ServerError('Could not delete blob file');
                 }
             }
             const { deletedCount } = yield repositories_1.eventsRepo.deleteEvent(id);
             if (deletedCount !== 1) {
-                throw api_error_1.ApiError.NotFound(`Event with id: ${id} wasn't found`);
+                throw api_error_1.ApiError.ServerError('Could not delete event');
             }
             return id;
         });

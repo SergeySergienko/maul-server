@@ -34,7 +34,7 @@ export const teamMembersRepo = {
     const result = await teamMemberCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
-        $set: { isActivated: true, teamRole: 'MEMBER', updatedAt: new Date() },
+        $set: { teamRole: 'MEMBER', updatedAt: new Date() },
       },
       { returnDocument: 'after' }
     );

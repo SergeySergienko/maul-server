@@ -78,7 +78,6 @@ export const teamMembersService = {
       position,
       photo: blobFile.url,
       slogan,
-      isActivated: false,
       teamRole: 'CANDIDATE',
       createdAt: new Date(),
     };
@@ -141,7 +140,7 @@ export const teamMembersService = {
         teamMember.photo
       );
       if (res.errorCode) {
-        throw ApiError.ServerError('Can not delete blob file');
+        throw ApiError.ServerError('Could not delete blob file');
       }
 
       const blobFile = await storageService.writeFileToAzureStorage(
@@ -168,7 +167,7 @@ export const teamMembersService = {
     const res = await storageService.deleteFileFromAzureStorage(photo);
 
     if (res.errorCode) {
-      throw ApiError.ServerError('Can not delete blob file');
+      throw ApiError.ServerError('Could not delete blob file');
     }
 
     const { deletedCount } = await teamMembersRepo.deleteTeamMember(id);

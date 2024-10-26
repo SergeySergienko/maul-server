@@ -2,6 +2,7 @@ export * from './authMiddleware';
 export * from './multerMiddleware';
 export * from './validationResultMiddleware';
 export * from './checkEventCreateMiddleware';
+export * from './checkEventDeleteMiddleware';
 export * from './checkTeamMemberActivateMiddleware';
 export * from './checkTeamMemberCreateMiddleware';
 export * from './checkTeamMemberUpdateMiddleware';
