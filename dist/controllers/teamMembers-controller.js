@@ -36,12 +36,8 @@ exports.teamMembersController = {
     },
     findTeamMembers(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { limit, sort } = req.query;
             try {
-                const teamMembers = yield services_1.teamMembersService.findTeamMembers({
-                    limit,
-                    sort,
-                });
+                const teamMembers = yield services_1.teamMembersService.findTeamMembers(req.query);
                 return res.json(teamMembers);
             }
             catch (error) {

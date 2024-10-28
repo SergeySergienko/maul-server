@@ -1,7 +1,11 @@
-import { FindOptions, ObjectId } from 'mongodb';
+import { Filter, FindOptions, ObjectId } from 'mongodb';
 import { teamMemberCollection } from '.';
 import { TeamMemberModel } from '../models';
-import { QueryDTO, TeamMemberFindDTO, TeamMemberUpdateBdDTO } from '../types';
+import {
+  TeamMemberFindDTO,
+  TeamMembersFindDTO,
+  TeamMemberUpdateBdDTO,
+} from '../types';
 
 export const teamMembersRepo = {
   async findTeamMember<T extends keyof TeamMemberFindDTO>(
@@ -15,15 +19,20 @@ export const teamMembersRepo = {
     return await teamMemberCollection.findOne({ [field]: value });
   },
 
-  async findTeamMembers({ limit, sort }: QueryDTO) {
+  async findTeamMembers({ limit, sort, teamRole }: TeamMembersFindDTO) {
     const options: FindOptions = {};
+    const filter: Filter<TeamMemberModel> = {};
 
     if (limit) {
       options.limit = +limit;
     }
     options.sort = { name: sort || 'asc' };
 
-    return await teamMemberCollection.find({}, options).toArray();
+    if (teamRole) {
+      filter.teamRole = teamRole;
+    }
+
+    return await teamMemberCollection.find(filter, options).toArray();
   },
 
   async createTeamMember(teamMember: TeamMemberModel) {

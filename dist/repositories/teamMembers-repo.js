@@ -33,13 +33,17 @@ exports.teamMembersRepo = {
         });
     },
     findTeamMembers(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort, teamRole }) {
             const options = {};
+            const filter = {};
             if (limit) {
                 options.limit = +limit;
             }
             options.sort = { name: sort || 'asc' };
-            return yield _1.teamMemberCollection.find({}, options).toArray();
+            if (teamRole) {
+                filter.teamRole = teamRole;
+            }
+            return yield _1.teamMemberCollection.find(filter, options).toArray();
         });
     },
     createTeamMember(teamMember) {

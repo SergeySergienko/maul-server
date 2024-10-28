@@ -4,9 +4,9 @@ import { storageService, usersService } from '.';
 import { ApiError } from '../exceptions/api-error';
 import { normalizeImage, teamMemberModelMapper } from '../utils';
 import {
-  QueryDTO,
   TeamMemberInputDTO,
   TeamMemberOutputDTO,
+  TeamMembersFindDTO,
   TeamMemberUpdateBdDTO,
   TeamMemberUpdateDTO,
 } from '../types';
@@ -40,10 +40,11 @@ export const teamMembersService = {
     return teamMemberModelMapper(teamMember);
   },
 
-  async findTeamMembers({ limit, sort }: QueryDTO) {
+  async findTeamMembers({ limit, sort, teamRole }: TeamMembersFindDTO) {
     const teamMembers = await teamMembersRepo.findTeamMembers({
       limit,
       sort,
+      teamRole,
     });
 
     if (!teamMembers) {

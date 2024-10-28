@@ -38,3 +38,9 @@ export type TeamMemberFindDTO = {
   userId: string;
   name: string;
 };
+
+export type TeamMembersFindDTO = {
+  limit?: string;
+  sort?: 'asc' | 'desc';
+  teamRole?: keyof typeof TeamRoleModel;
+};

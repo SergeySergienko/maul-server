@@ -6,10 +6,10 @@ import {
   RequestWithParams,
   TeamMemberInputDTO,
   IdParamsDTO,
-  QueryDTO,
   TeamMemberOutputDTO,
   TeamMemberUpdateDTO,
   TeamMemberFindDTO,
+  TeamMembersFindDTO,
 } from '../types';
 
 export const teamMembersController = {
@@ -42,16 +42,12 @@ export const teamMembersController = {
   },
 
   async findTeamMembers(
-    req: RequestWithQuery<QueryDTO>,
+    req: RequestWithQuery<TeamMembersFindDTO>,
     res: Response<TeamMemberOutputDTO[]>,
     next: NextFunction
   ) {
-    const { limit, sort } = req.query;
     try {
-      const teamMembers = await teamMembersService.findTeamMembers({
-        limit,
-        sort,
-      });
+      const teamMembers = await teamMembersService.findTeamMembers(req.query);
       return res.json(teamMembers);
     } catch (error) {
       next(error);

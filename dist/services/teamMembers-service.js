@@ -47,10 +47,11 @@ exports.teamMembersService = {
         });
     },
     findTeamMembers(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ limit, sort }) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort, teamRole }) {
             const teamMembers = yield repositories_1.teamMembersRepo.findTeamMembers({
                 limit,
                 sort,
+                teamRole,
             });
             if (!teamMembers) {
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
