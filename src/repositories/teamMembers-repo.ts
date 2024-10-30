@@ -19,7 +19,7 @@ export const teamMembersRepo = {
     return await teamMemberCollection.findOne({ [field]: value });
   },
 
-  async findTeamMembers({ limit, sort, teamRole }: TeamMembersFindDTO) {
+  async findTeamMembers({ limit, sort, status }: TeamMembersFindDTO) {
     const options: FindOptions = {};
     const filter: Filter<TeamMemberModel> = {};
 
@@ -28,8 +28,8 @@ export const teamMembersRepo = {
     }
     options.sort = { name: sort || 'asc' };
 
-    if (teamRole) {
-      filter.teamRole = teamRole;
+    if (status) {
+      filter.status = status;
     }
 
     return await teamMemberCollection.find(filter, options).toArray();
@@ -43,7 +43,7 @@ export const teamMembersRepo = {
     const result = await teamMemberCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
-        $set: { teamRole: 'MEMBER', updatedAt: new Date() },
+        $set: { status: 'MEMBER', updatedAt: new Date() },
       },
       { returnDocument: 'after' }
     );

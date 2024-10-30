@@ -33,15 +33,15 @@ exports.teamMembersRepo = {
         });
     },
     findTeamMembers(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ limit, sort, teamRole }) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort, status }) {
             const options = {};
             const filter = {};
             if (limit) {
                 options.limit = +limit;
             }
             options.sort = { name: sort || 'asc' };
-            if (teamRole) {
-                filter.teamRole = teamRole;
+            if (status) {
+                filter.status = status;
             }
             return yield _1.teamMemberCollection.find(filter, options).toArray();
         });
@@ -54,7 +54,7 @@ exports.teamMembersRepo = {
     activateTeamMember(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield _1.teamMemberCollection.findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: { teamRole: 'MEMBER', updatedAt: new Date() },
+                $set: { status: 'MEMBER', updatedAt: new Date() },
             }, { returnDocument: 'after' });
             return result.value;
         });

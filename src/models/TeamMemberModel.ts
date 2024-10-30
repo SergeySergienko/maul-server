@@ -6,10 +6,10 @@ export interface TeamMemberModel {
   slogan: string;
   createdAt: Date;
   updatedAt?: Date;
-  teamRole?: keyof typeof TeamRoleModel;
+  status?: keyof typeof Status;
 }
 
-export enum TeamRoleModel {
+export enum Status {
   CANDIDATE,
   MEMBER,
 }

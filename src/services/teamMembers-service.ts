@@ -40,11 +40,11 @@ export const teamMembersService = {
     return teamMemberModelMapper(teamMember);
   },
 
-  async findTeamMembers({ limit, sort, teamRole }: TeamMembersFindDTO) {
+  async findTeamMembers({ limit, sort, status }: TeamMembersFindDTO) {
     const teamMembers = await teamMembersRepo.findTeamMembers({
       limit,
       sort,
-      teamRole,
+      status,
     });
 
     if (!teamMembers) {
@@ -79,7 +79,7 @@ export const teamMembersService = {
       position,
       photo: blobFile.url,
       slogan,
-      teamRole: 'CANDIDATE',
+      status: 'CANDIDATE',
       createdAt: new Date(),
     };
     const { insertedId } = await teamMembersRepo.createTeamMember(

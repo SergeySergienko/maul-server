@@ -47,11 +47,11 @@ exports.teamMembersService = {
         });
     },
     findTeamMembers(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ limit, sort, teamRole }) {
+        return __awaiter(this, arguments, void 0, function* ({ limit, sort, status }) {
             const teamMembers = yield repositories_1.teamMembersRepo.findTeamMembers({
                 limit,
                 sort,
-                teamRole,
+                status,
             });
             if (!teamMembers) {
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
@@ -74,7 +74,7 @@ exports.teamMembersService = {
                 position,
                 photo: blobFile.url,
                 slogan,
-                teamRole: 'CANDIDATE',
+                status: 'CANDIDATE',
                 createdAt: new Date(),
             };
             const { insertedId } = yield repositories_1.teamMembersRepo.createTeamMember(newTeamMember);

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PositionModel = exports.TeamRoleModel = void 0;
-var TeamRoleModel;
-(function (TeamRoleModel) {
-    TeamRoleModel[TeamRoleModel["CANDIDATE"] = 0] = "CANDIDATE";
-    TeamRoleModel[TeamRoleModel["MEMBER"] = 1] = "MEMBER";
-})(TeamRoleModel || (exports.TeamRoleModel = TeamRoleModel = {}));
+exports.PositionModel = exports.Status = void 0;
+var Status;
+(function (Status) {
+    Status[Status["CANDIDATE"] = 0] = "CANDIDATE";
+    Status[Status["MEMBER"] = 1] = "MEMBER";
+})(Status || (exports.Status = Status = {}));
 var PositionModel;
 (function (PositionModel) {
     PositionModel[PositionModel["UNIVERSAL"] = 0] = "UNIVERSAL";
