@@ -1,16 +1,15 @@
 import { NextFunction, Response } from 'express';
-import { ObjectId } from 'mongodb';
 import { ApiError } from '../exceptions/api-error';
-import { IdParamsDTO, RequestWithParams } from '../types';
+import { RequestWithBody, TeamMemberStatusDTO } from '../types';
 import { teamMembersRepo } from '../repositories';
 
-export const checkTeamMemberActivateMiddleware = async (
-  req: RequestWithParams<IdParamsDTO>,
+export const checkTeamMemberStatusMiddleware = async (
+  req: RequestWithBody<TeamMemberStatusDTO>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { id, status } = req.body;
     const teamMember = await teamMembersRepo.findTeamMember('id', id);
     if (!teamMember) {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`, [
@@ -19,15 +18,24 @@ export const checkTeamMemberActivateMiddleware = async (
           value: id,
           msg: 'not found',
           path: 'id',
-          location: 'params',
+          location: 'body',
         },
       ]);
     }
 
-    if (teamMember.status === 'MEMBER') {
+    if (teamMember.status === status) {
       throw ApiError.BadRequest(
         409,
-        `Team member with user ID ${id} already activated`
+        `Team member with user id ${id} status is already set to ${status}`,
+        [
+          {
+            type: 'field',
+            value: status,
+            msg: 'already set',
+            path: 'status',
+            location: 'body',
+          },
+        ]
       );
     }
 

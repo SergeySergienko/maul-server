@@ -1,5 +1,5 @@
 import { body, check, query, param } from 'express-validator';
-import { ALLOWED_ROLES, POSITIONS } from '../constants';
+import { ALLOWED_ROLES, POSITIONS, STATUSES } from '../constants';
 
 export const limitRule = query('limit')
   .optional()
@@ -24,6 +24,10 @@ export const bodyIdRule = body('id')
 export const bodyRoleRule = body('role')
   .isIn(ALLOWED_ROLES)
   .withMessage(`role must have one of the values: [${ALLOWED_ROLES}]`);
+
+export const bodyStatusRule = body('status')
+  .isIn(STATUSES)
+  .withMessage(`status must have one of the values: [${STATUSES}]`);
 
 export const bodyEmailRule = body(
   'email',

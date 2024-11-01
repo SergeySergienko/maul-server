@@ -3,6 +3,7 @@ import {
   bodyNameRule,
   bodyPositionRule,
   bodySloganRule,
+  bodyStatusRule,
   bodyUserIdRule,
   limitRule,
   paramIdRule,
@@ -15,7 +16,7 @@ export const teamMembersValidators = {
   'GET /api/team-members/': [limitRule, sortRule],
   'GET /api/team-members/:id': [paramIdRule],
   'GET /api/team-members/search': [queryUserIdRule],
-  'PATCH /api/team-members/:id': [paramIdRule],
+  'PATCH /api/team-members/:id': [bodyIdRule, bodyStatusRule],
   'POST /api/team-members/': [
     bodyUserIdRule,
     bodyNameRule,

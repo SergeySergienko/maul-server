@@ -45,4 +45,4 @@ const checkTeamMemberStatusMiddleware = (req, res, next) => __awaiter(void 0, vo
     }
 });
 exports.checkTeamMemberStatusMiddleware = checkTeamMemberStatusMiddleware;
-//# sourceMappingURL=checkTeamMemberActivateMiddleware.js.map
+//# sourceMappingURL=checkTeamMemberStatusMiddleware.js.map

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PositionModel = exports.Status = void 0;
-var Status;
-(function (Status) {
-    Status[Status["CANDIDATE"] = 0] = "CANDIDATE";
-    Status[Status["MEMBER"] = 1] = "MEMBER";
-})(Status || (exports.Status = Status = {}));
+exports.PositionModel = exports.StatusModel = void 0;
+var StatusModel;
+(function (StatusModel) {
+    StatusModel[StatusModel["CANDIDATE"] = 0] = "CANDIDATE";
+    StatusModel[StatusModel["MEMBER"] = 1] = "MEMBER";
+})(StatusModel || (exports.StatusModel = StatusModel = {}));
 var PositionModel;
 (function (PositionModel) {
     PositionModel[PositionModel["UNIVERSAL"] = 0] = "UNIVERSAL";

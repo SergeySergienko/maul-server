@@ -85,20 +85,28 @@ exports.teamMembersService = {
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
         });
     },
-    activateTeamMember(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const activatedTeamMember = yield repositories_1.teamMembersRepo.activateTeamMember(id);
-            if (!activatedTeamMember) {
+    changeStatus(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ id, status }) {
+            const changedTeamMember = yield repositories_1.teamMembersRepo.changeStatus({
+                id,
+                status,
+            });
+            if (!changedTeamMember) {
                 throw api_error_1.ApiError.NotFound(`Team member with id: ${id} wasn't found`);
             }
             // todo: create usersService.findUser
-            const userId = activatedTeamMember.userId;
+            const { userId, name } = changedTeamMember;
             const user = yield repositories_1.usersRepo.findUser('id', userId);
             if (!user) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
-            yield mail_service_1.default.sendTeamMembershipApprovedMail(user.email, activatedTeamMember.name);
-            return (0, utils_1.teamMemberModelMapper)(activatedTeamMember);
+            if (status === 'MEMBER') {
+                yield mail_service_1.default.sendTeamMembershipApprovedMail(user.email, name);
+            }
+            else {
+                yield mail_service_1.default.sendTeamMembershipSuspendedMail(user.email, name);
+            }
+            return (0, utils_1.teamMemberModelMapper)(changedTeamMember);
         });
     },
     updateTeamMember(_a) {

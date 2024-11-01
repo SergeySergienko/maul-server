@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.bodySloganRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.queryUserIdRule = exports.bodyUserIdRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
+exports.teamPlaceRule = exports.uploadFilesRule = exports.bodyLocationRule = exports.bodyDescriptionRule = exports.bodyTitleRule = exports.bodyDateRule = exports.bodySloganRule = exports.uploadFileRule = exports.bodyPositionRule = exports.bodyNameRule = exports.queryUserIdRule = exports.bodyUserIdRule = exports.bodyPasswordRule = exports.bodyEmailRule = exports.bodyStatusRule = exports.bodyRoleRule = exports.bodyIdRule = exports.paramIdRule = exports.sortRule = exports.limitRule = void 0;
 const express_validator_1 = require("express-validator");
 const constants_1 = require("../constants");
 exports.limitRule = (0, express_validator_1.query)('limit')
@@ -22,6 +22,9 @@ exports.bodyIdRule = (0, express_validator_1.body)('id')
 exports.bodyRoleRule = (0, express_validator_1.body)('role')
     .isIn(constants_1.ALLOWED_ROLES)
     .withMessage(`role must have one of the values: [${constants_1.ALLOWED_ROLES}]`);
+exports.bodyStatusRule = (0, express_validator_1.body)('status')
+    .isIn(constants_1.STATUSES)
+    .withMessage(`status must have one of the values: [${constants_1.STATUSES}]`);
 exports.bodyEmailRule = (0, express_validator_1.body)('email', 'email must have email format').isEmail();
 exports.bodyPasswordRule = (0, express_validator_1.body)('password', 'the password must contain from 4 to 10 characters')
     .trim()

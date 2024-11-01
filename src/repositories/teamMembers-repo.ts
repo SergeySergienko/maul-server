@@ -4,6 +4,7 @@ import { TeamMemberModel } from '../models';
 import {
   TeamMemberFindDTO,
   TeamMembersFindDTO,
+  TeamMemberStatusDTO,
   TeamMemberUpdateBdDTO,
 } from '../types';
 
@@ -39,11 +40,11 @@ export const teamMembersRepo = {
     return await teamMemberCollection.insertOne(teamMember);
   },
 
-  async activateTeamMember(id: string) {
+  async changeStatus({ id, status }: TeamMemberStatusDTO) {
     const result = await teamMemberCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       {
-        $set: { status: 'MEMBER', updatedAt: new Date() },
+        $set: { status, updatedAt: new Date() },
       },
       { returnDocument: 'after' }
     );

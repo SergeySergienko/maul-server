@@ -7,6 +7,7 @@ import {
   TeamMemberInputDTO,
   TeamMemberOutputDTO,
   TeamMembersFindDTO,
+  TeamMemberStatusDTO,
   TeamMemberUpdateBdDTO,
   TeamMemberUpdateDTO,
 } from '../types';
@@ -100,24 +101,28 @@ export const teamMembersService = {
     return teamMemberModelMapper({ ...newTeamMember, _id: insertedId });
   },
 
-  async activateTeamMember(id: string) {
-    const activatedTeamMember = await teamMembersRepo.activateTeamMember(id);
-    if (!activatedTeamMember) {
+  async changeStatus({ id, status }: TeamMemberStatusDTO) {
+    const changedTeamMember = await teamMembersRepo.changeStatus({
+      id,
+      status,
+    });
+    if (!changedTeamMember) {
       throw ApiError.NotFound(`Team member with id: ${id} wasn't found`);
     }
 
     // todo: create usersService.findUser
-    const userId = activatedTeamMember.userId;
+    const { userId, name } = changedTeamMember;
     const user = await usersRepo.findUser('id', userId);
     if (!user) {
       throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
-    await mailService.sendTeamMembershipApprovedMail(
-      user.email,
-      activatedTeamMember.name
-    );
+    if (status === 'MEMBER') {
+      await mailService.sendTeamMembershipApprovedMail(user.email, name);
+    } else {
+      await mailService.sendTeamMembershipSuspendedMail(user.email, name);
+    }
 
-    return teamMemberModelMapper(activatedTeamMember);
+    return teamMemberModelMapper(changedTeamMember);
   },
 
   async updateTeamMember({

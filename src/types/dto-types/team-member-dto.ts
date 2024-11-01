@@ -1,4 +1,4 @@
-import { PositionModel, Status } from '../../models';
+import { PositionModel, StatusModel } from '../../models';
 
 export type TeamMemberInputDTO = {
   userId: string;
@@ -17,7 +17,12 @@ export type TeamMemberOutputDTO = {
   slogan: string;
   createdAt: Date;
   updatedAt?: Date;
-  status?: keyof typeof Status;
+  status?: keyof typeof StatusModel;
+};
+
+export type TeamMemberStatusDTO = {
+  id: string;
+  status: keyof typeof StatusModel;
 };
 
 export type TeamMemberUpdateDTO = {
@@ -26,7 +31,6 @@ export type TeamMemberUpdateDTO = {
   position?: keyof typeof PositionModel;
   photo?: Express.Multer.File;
   slogan?: string;
-  status?: keyof typeof Status;
 };
 
 export type TeamMemberUpdateBdDTO = Omit<TeamMemberUpdateDTO, 'photo'> & {
@@ -42,5 +46,5 @@ export type TeamMemberFindDTO = {
 export type TeamMembersFindDTO = {
   limit?: string;
   sort?: 'asc' | 'desc';
-  status?: keyof typeof Status;
+  status?: keyof typeof StatusModel;
 };

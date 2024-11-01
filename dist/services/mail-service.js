@@ -116,6 +116,29 @@ class MailService {
             }
         });
     }
+    sendTeamMembershipSuspendedMail(to, teamMemberName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.transport.sendMail({
+                    from: this.from,
+                    to,
+                    subject: 'Team membership suspended / Teammitgliedschaft ausgesetzt',
+                    html: `
+<h3>Hello, ${teamMemberName}!</h3>
+<p>We inform you that your membership in the team has been suspended.</p>
+<p>All the best</p>
+<br/>
+<h3>Hallo, ${teamMemberName}!</h3>
+<p>Wir informieren Sie, dass Ihre Mitgliedschaft im Team ausgesetzt wurde.</p>
+<p>Alles Gute</p>
+`,
+                });
+            }
+            catch (error) {
+                throw api_error_1.ApiError.ServerError('Mail Service Error');
+            }
+        });
+    }
 }
 exports.default = new MailService();
 //# sourceMappingURL=mail-service.js.map

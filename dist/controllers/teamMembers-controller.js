@@ -64,10 +64,10 @@ exports.teamMembersController = {
             }
         });
     },
-    activateTeamMember(req, res, next) {
+    changeStatus(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const teamMember = yield services_1.teamMembersService.activateTeamMember(req.params.id);
+                const teamMember = yield services_1.teamMembersService.changeStatus(req.body);
                 return res.json(teamMember);
             }
             catch (error) {

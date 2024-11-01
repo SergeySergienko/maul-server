@@ -10,6 +10,7 @@ import {
   TeamMemberUpdateDTO,
   TeamMemberFindDTO,
   TeamMembersFindDTO,
+  TeamMemberStatusDTO,
 } from '../types';
 
 export const teamMembersController = {
@@ -75,15 +76,13 @@ export const teamMembersController = {
     }
   },
 
-  async activateTeamMember(
-    req: RequestWithParams<IdParamsDTO>,
+  async changeStatus(
+    req: RequestWithBody<TeamMemberStatusDTO>,
     res: Response<TeamMemberOutputDTO>,
     next: NextFunction
   ) {
     try {
-      const teamMember = await teamMembersService.activateTeamMember(
-        req.params.id
-      );
+      const teamMember = await teamMembersService.changeStatus(req.body);
       return res.json(teamMember);
     } catch (error) {
       next(error);

@@ -1,4 +1,4 @@
-import { PositionModel, RoleModel } from './models';
+import { PositionModel, RoleModel, StatusModel } from './models';
 
 export const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
 export const IMAGE_WIDTH = 192;
@@ -16,6 +16,11 @@ export const POSITIONS: Array<keyof typeof PositionModel> = [
   'LIBERO',
   'SETTER',
   'HITTER',
+];
+
+export const STATUSES: Array<keyof typeof StatusModel> = [
+  'CANDIDATE',
+  'MEMBER',
 ];
 
 export const CLIENT_ORIGIN =
