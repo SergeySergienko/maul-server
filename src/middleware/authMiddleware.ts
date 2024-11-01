@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../exceptions/api-error';
-import { CustomJwtPayload, RoleModel } from '../models';
-import { tokensService } from '../services';
-
+import { RoleModel } from '../models';
+import { authorizeUser } from '../utils';
 export const authMiddleware =
   (role: keyof typeof RoleModel) =>
   (req: Request, res: Response, next: NextFunction) => {
@@ -10,24 +9,7 @@ export const authMiddleware =
       next();
     }
     try {
-      const accessToken = req.headers.authorization?.split(' ')[1];
-      if (!accessToken) {
-        throw ApiError.UnauthorizedError();
-      }
-
-      const secret = process.env.JWT_ACCESS_SECRET;
-      if (!secret) {
-        throw ApiError.ServerError('Internal Server Error');
-      }
-
-      const userData = tokensService.validateToken<CustomJwtPayload>(
-        accessToken,
-        secret
-      );
-      if (!userData) {
-        throw ApiError.UnauthorizedError();
-      }
-
+      const userData = authorizeUser(req);
       const hasRole = RoleModel[userData.role] >= RoleModel[role];
 
       if (!hasRole) {

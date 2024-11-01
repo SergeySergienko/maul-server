@@ -6,6 +6,7 @@ export * from './checkEventDeleteMiddleware';
 export * from './checkTeamMemberStatusMiddleware';
 export * from './checkTeamMemberCreateMiddleware';
 export * from './checkTeamMemberUpdateMiddleware';
+export * from './checkTeamMemberDeleteMiddleware';
 export * from './checkUserCreateMiddleware';
 export * from './checkUserDeleteMiddleware';
 export * from './checkUserUpdateMiddleware';

@@ -9,24 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkUserDeleteMiddleware = void 0;
+exports.checkTeamMemberDeleteMiddleware = void 0;
 const api_error_1 = require("../exceptions/api-error");
-const models_1 = require("../models");
-const repositories_1 = require("../repositories");
+const services_1 = require("../services");
 const utils_1 = require("../utils");
-const checkUserDeleteMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const checkTeamMemberDeleteMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userData = (0, utils_1.authorizeUser)(req);
-        const candidateToDelete = yield repositories_1.usersRepo.findUser('id', req.params.id);
-        if (!candidateToDelete) {
-            throw api_error_1.ApiError.BadRequest(400, 'User ID is incorrect');
+        const teamMember = yield services_1.teamMembersService.findTeamMember(req.params.id);
+        if (userData.id !== teamMember.userId) {
+            throw api_error_1.ApiError.ForbiddenError('No permission to delete another team member');
         }
-        if (userData.id === candidateToDelete._id.toString()) {
-            throw api_error_1.ApiError.ForbiddenError('User is not allowed to delete themselves');
-        }
-        const hasRole = models_1.RoleModel[userData.role] > models_1.RoleModel[candidateToDelete.role];
-        if (!hasRole) {
-            throw api_error_1.ApiError.ForbiddenError(`No permission to delete user with ${candidateToDelete.role} role`);
+        const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
+        if (!containerName) {
+            throw api_error_1.ApiError.BadRequest(400, 'Storage container name is required');
         }
         next();
     }
@@ -34,5 +30,5 @@ const checkUserDeleteMiddleware = (req, res, next) => __awaiter(void 0, void 0, 
         return next(error);
     }
 });
-exports.checkUserDeleteMiddleware = checkUserDeleteMiddleware;
-//# sourceMappingURL=checkUserDeleteMiddleware.js.map
+exports.checkTeamMemberDeleteMiddleware = checkTeamMemberDeleteMiddleware;
+//# sourceMappingURL=checkTeamMemberDeleteMiddleware.js.map

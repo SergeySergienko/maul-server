@@ -4,6 +4,7 @@ import {
   authMiddleware,
   checkTeamMemberStatusMiddleware,
   checkTeamMemberCreateMiddleware,
+  checkTeamMemberDeleteMiddleware,
   checkTeamMemberUpdateMiddleware,
   multerMiddleware,
 } from '../middleware';
@@ -51,7 +52,8 @@ teamMembersRouter.put(
 );
 teamMembersRouter.delete(
   '/:id',
-  authMiddleware('ADMIN'),
+  authMiddleware('USER'),
   validateRequest(teamMembersValidators),
+  checkTeamMemberDeleteMiddleware,
   teamMembersController.deleteTeamMember
 );

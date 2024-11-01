@@ -1,11 +1,22 @@
 import { WithId } from 'mongodb';
+import { Request } from 'express';
 import path from 'path';
 import sharp from 'sharp';
-import { NormalizedImageResult } from './types';
 import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
-import { EventModel, TeamMemberModel, UserModel } from './models';
+import {
+  CustomJwtPayload,
+  EventModel,
+  TeamMemberModel,
+  UserModel,
+} from './models';
 import { tokensService } from './services';
-import { EventOutputDTO, TeamMemberOutputDTO, UserOutputDTO } from './types';
+import {
+  EventOutputDTO,
+  NormalizedImageResult,
+  TeamMemberOutputDTO,
+  UserOutputDTO,
+} from './types';
+import { ApiError } from './exceptions/api-error';
 
 export const isDateValid = (date: string) => {
   const regex = /^\d{4}-\d{2}-\d{2}$/;
@@ -96,4 +107,26 @@ export const getUserWithTokens = async (userData: WithId<UserModel>) => {
     ...tokens,
     user,
   };
+};
+
+export const authorizeUser = (req: Request) => {
+  const accessToken = req.headers.authorization?.split(' ')[1];
+  if (!accessToken) {
+    throw ApiError.UnauthorizedError();
+  }
+
+  const secret = process.env.JWT_ACCESS_SECRET;
+  if (!secret) {
+    throw ApiError.ServerError('Internal Server Error');
+  }
+
+  const userData = tokensService.validateToken<CustomJwtPayload>(
+    accessToken,
+    secret
+  );
+  if (!userData) {
+    throw ApiError.UnauthorizedError();
+  }
+
+  return userData;
 };

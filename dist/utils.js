@@ -23,11 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserWithTokens = exports.teamMemberModelMapper = exports.eventModelMapper = exports.userModelMapper = exports.parseBlobUrl = exports.normalizeImage = exports.isDateValid = void 0;
+exports.authorizeUser = exports.getUserWithTokens = exports.teamMemberModelMapper = exports.eventModelMapper = exports.userModelMapper = exports.parseBlobUrl = exports.normalizeImage = exports.isDateValid = void 0;
 const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
 const constants_1 = require("./constants");
 const services_1 = require("./services");
+const api_error_1 = require("./exceptions/api-error");
 const isDateValid = (date) => {
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(date);
@@ -93,4 +94,21 @@ const getUserWithTokens = (userData) => __awaiter(void 0, void 0, void 0, functi
     return Object.assign(Object.assign({}, tokens), { user });
 });
 exports.getUserWithTokens = getUserWithTokens;
+const authorizeUser = (req) => {
+    var _a;
+    const accessToken = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
+    if (!accessToken) {
+        throw api_error_1.ApiError.UnauthorizedError();
+    }
+    const secret = process.env.JWT_ACCESS_SECRET;
+    if (!secret) {
+        throw api_error_1.ApiError.ServerError('Internal Server Error');
+    }
+    const userData = services_1.tokensService.validateToken(accessToken, secret);
+    if (!userData) {
+        throw api_error_1.ApiError.UnauthorizedError();
+    }
+    return userData;
+};
+exports.authorizeUser = authorizeUser;
 //# sourceMappingURL=utils.js.map

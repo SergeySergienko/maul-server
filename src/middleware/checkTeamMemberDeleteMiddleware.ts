@@ -1,22 +1,22 @@
 import { NextFunction, Response } from 'express';
 import { ApiError } from '../exceptions/api-error';
 import { teamMembersService } from '../services';
-import { RequestWithBody, TeamMemberUpdateDTO } from '../types';
+import { IdParamsDTO, RequestWithParams } from '../types';
 import { authorizeUser } from '../utils';
 
-export const checkTeamMemberUpdateMiddleware = async (
-  req: RequestWithBody<TeamMemberUpdateDTO>,
+export const checkTeamMemberDeleteMiddleware = async (
+  req: RequestWithParams<IdParamsDTO>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const userData = authorizeUser(req);
 
-    const teamMember = await teamMembersService.findTeamMember(req.body.id);
+    const teamMember = await teamMembersService.findTeamMember(req.params.id);
 
     if (userData.id !== teamMember.userId) {
       throw ApiError.ForbiddenError(
-        'No permission to update another team member'
+        'No permission to delete another team member'
       );
     }
 

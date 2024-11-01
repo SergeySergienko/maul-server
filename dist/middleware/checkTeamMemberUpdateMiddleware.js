@@ -12,21 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkTeamMemberUpdateMiddleware = void 0;
 const api_error_1 = require("../exceptions/api-error");
 const services_1 = require("../services");
+const utils_1 = require("../utils");
 const checkTeamMemberUpdateMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const accessToken = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-        if (!accessToken) {
-            throw api_error_1.ApiError.UnauthorizedError();
-        }
-        const secret = process.env.JWT_ACCESS_SECRET;
-        if (!secret) {
-            throw api_error_1.ApiError.ServerError('Internal Server Error');
-        }
-        const userData = services_1.tokensService.validateToken(accessToken, secret);
-        if (!userData) {
-            throw api_error_1.ApiError.UnauthorizedError();
-        }
+        const userData = (0, utils_1.authorizeUser)(req);
         const teamMember = yield services_1.teamMembersService.findTeamMember(req.body.id);
         if (userData.id !== teamMember.userId) {
             throw api_error_1.ApiError.ForbiddenError('No permission to update another team member');

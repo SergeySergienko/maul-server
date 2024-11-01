@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 import { ApiError } from '../exceptions/api-error';
-import { CustomJwtPayload, RoleModel } from '../models';
+import { RoleModel } from '../models';
 import { RequestWithBody } from '../types';
-import { tokensService } from '../services';
 import { usersRepo } from '../repositories';
 import { UserUpdateDTO } from '../types';
+import { authorizeUser } from '../utils';
 
 export const checkUserUpdateMiddleware = async (
   req: RequestWithBody<UserUpdateDTO>,
@@ -12,24 +12,7 @@ export const checkUserUpdateMiddleware = async (
   next: NextFunction
 ) => {
   try {
-    const accessToken = req.headers.authorization?.split(' ')[1];
-    if (!accessToken) {
-      throw ApiError.UnauthorizedError();
-    }
-    const role = req.body.role as keyof typeof RoleModel;
-
-    const secret = process.env.JWT_ACCESS_SECRET;
-    if (!secret) {
-      throw ApiError.ServerError('Internal Server Error');
-    }
-
-    const userData = tokensService.validateToken<CustomJwtPayload>(
-      accessToken,
-      secret
-    );
-    if (!userData) {
-      throw ApiError.UnauthorizedError();
-    }
+    const userData = authorizeUser(req);
 
     if (userData.id === req.body.id) {
       throw ApiError.ForbiddenError('User is not allowed to update their role');
@@ -39,6 +22,8 @@ export const checkUserUpdateMiddleware = async (
     if (!candidateToUpdate) {
       throw ApiError.BadRequest(400, 'User ID is incorrect');
     }
+
+    const role = req.body.role as keyof typeof RoleModel;
 
     const hasRole =
       RoleModel[userData.role] > RoleModel[role] &&
