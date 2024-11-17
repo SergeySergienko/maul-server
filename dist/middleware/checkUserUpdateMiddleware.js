@@ -24,6 +24,9 @@ const checkUserUpdateMiddleware = (req, res, next) => __awaiter(void 0, void 0, 
         if (!candidateToUpdate) {
             throw api_error_1.ApiError.BadRequest(400, 'User ID is incorrect');
         }
+        if (candidateToUpdate.activationToken) {
+            throw api_error_1.ApiError.ForbiddenError('Account has not yet been activated');
+        }
         const role = req.body.role;
         const hasRole = models_1.RoleModel[userData.role] > models_1.RoleModel[role] &&
             models_1.RoleModel[userData.role] > models_1.RoleModel[candidateToUpdate.role];

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../exceptions/api-error';
 import { RoleModel } from '../models';
 import { authorizeUser } from '../utils';
+
 export const authMiddleware =
   (role: keyof typeof RoleModel) =>
   (req: Request, res: Response, next: NextFunction) => {

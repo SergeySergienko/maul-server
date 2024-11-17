@@ -4,9 +4,9 @@ export interface TeamMemberModel {
   position: keyof typeof PositionModel;
   photo: string;
   slogan: string;
+  status: keyof typeof StatusModel;
   createdAt: Date;
   updatedAt?: Date;
-  status?: keyof typeof StatusModel;
 }
 
 export enum StatusModel {

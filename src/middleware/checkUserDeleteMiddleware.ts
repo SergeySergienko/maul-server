@@ -4,6 +4,7 @@ import { RoleModel } from '../models';
 import { RequestWithParams, IdParamsDTO } from '../types';
 import { usersRepo } from '../repositories';
 import { authorizeUser } from '../utils';
+import { teamMembersService } from '../services';
 
 export const checkUserDeleteMiddleware = async (
   req: RequestWithParams<IdParamsDTO>,
@@ -18,14 +19,23 @@ export const checkUserDeleteMiddleware = async (
       throw ApiError.BadRequest(400, 'User ID is incorrect');
     }
 
-    if (userData.id === candidateToDelete._id.toString()) {
-      throw ApiError.ForbiddenError('User is not allowed to delete themselves');
+    const teamMemberData = await teamMembersService.findTeamMemberByUserId(
+      req.params.id
+    );
+    if (teamMemberData) {
+      throw ApiError.ForbiddenError(
+        `Can not delete user with ${teamMemberData.status} status`
+      );
     }
 
-    const hasRole =
+    if (userData.id === candidateToDelete._id.toString()) {
+      throw ApiError.ForbiddenError('Not allowed to delete themselves');
+    }
+
+    const hasPermission =
       RoleModel[userData.role] > RoleModel[candidateToDelete.role];
 
-    if (!hasRole) {
+    if (!hasPermission) {
       throw ApiError.ForbiddenError(
         `No permission to delete user with ${candidateToDelete.role} role`
       );

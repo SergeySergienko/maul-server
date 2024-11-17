@@ -22,6 +22,9 @@ export const checkUserUpdateMiddleware = async (
     if (!candidateToUpdate) {
       throw ApiError.BadRequest(400, 'User ID is incorrect');
     }
+    if (candidateToUpdate.activationToken) {
+      throw ApiError.ForbiddenError('Account has not yet been activated');
+    }
 
     const role = req.body.role as keyof typeof RoleModel;
 
