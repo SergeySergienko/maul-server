@@ -91,10 +91,11 @@ export const teamMembersService = {
     const admins = await usersService.findUsers({ role: 'ADMIN' });
     await Promise.all(
       admins.map((admin) =>
-        mailService.sendTeamMembershipRequestMail(
-          admin.email,
-          insertedId.toString()
-        )
+        mailService.sendMail({
+          to: admin.email,
+          heading: 'membershipRequest',
+          teamMemberId: insertedId.toString(),
+        })
       )
     );
 
@@ -117,9 +118,17 @@ export const teamMembersService = {
       throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
     if (status === 'MEMBER') {
-      await mailService.sendTeamMembershipApprovedMail(user.email, name);
+      await mailService.sendMail({
+        to: user.email,
+        heading: 'membershipApprove',
+        teamMemberName: name,
+      });
     } else {
-      await mailService.sendTeamMembershipSuspendedMail(user.email, name);
+      await mailService.sendMail({
+        to: user.email,
+        heading: 'membershipSuspend',
+        teamMemberName: name,
+      });
     }
 
     return teamMemberModelMapper(changedTeamMember);
@@ -186,7 +195,11 @@ export const teamMembersService = {
       throw ApiError.NotFound(`User with id: ${userId} wasn't found`);
     }
 
-    await mailService.sendTeamMembershipTerminatedMail(user.email, name);
+    await mailService.sendMail({
+      to: user.email,
+      heading: 'membershipTerminate',
+      teamMemberName: name,
+    });
 
     return id;
   },

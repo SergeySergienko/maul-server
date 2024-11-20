@@ -2,7 +2,12 @@ import { WithId } from 'mongodb';
 import { Request } from 'express';
 import path from 'path';
 import sharp from 'sharp';
-import { ALLOWED_EXTENSIONS, IMAGE_HEIGHT, IMAGE_WIDTH } from './constants';
+import {
+  ALLOWED_EXTENSIONS,
+  CLIENT_ORIGIN,
+  IMAGE_HEIGHT,
+  IMAGE_WIDTH,
+} from './constants';
 import {
   CustomJwtPayload,
   EventModel,
@@ -12,6 +17,8 @@ import {
 import { tokensService } from './services';
 import {
   EventOutputDTO,
+  Mail,
+  MailContent,
   NormalizedImageResult,
   TeamMemberOutputDTO,
   UserOutputDTO,
@@ -129,4 +136,93 @@ export const authorizeUser = (req: Request) => {
   }
 
   return userData;
+};
+
+export const getMailContent = ({
+  heading,
+  identifier,
+  role,
+  teamMemberId,
+  teamMemberName,
+}: Omit<Mail, 'to'>): MailContent => {
+  switch (heading) {
+    case 'accountActivate':
+      return {
+        subject: 'Account activation / Accountaktivierung',
+        html: `
+          <h3>Dear User!</h3>
+          <p>Please, follow this <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">link</a> to verify your email address</p>
+          <br/>
+          <h3>Sehr geehrter Benutzer!</h3>
+          <p>Bitte folgen Sie diesem <a href="${CLIENT_ORIGIN}/email-confirmation/${identifier}">Link</a>, um Ihre E-Mail-Adresse zu bestätigen</p>
+          `,
+      };
+    case 'roleChange':
+      return {
+        subject: 'Role changed / Rolle geändert',
+        html: `
+          <h3>Dear User!</h3>
+          <p>We inform you that your role has been changed to ${role}</p>
+          <p><b>All the best</b></p>
+          <br/>
+          <h3>Sehr geehrter Benutzer!</h3>
+          <p>Wir informieren Sie, dass Ihre Rolle in ${role} geändert wurde</p>
+          <p><b>Alles Gute</b></p>
+          `,
+      };
+    case 'membershipApprove':
+      return {
+        subject: 'Team membership approved / Teammitgliedschaft genehmigt',
+        html: `
+          <h3>Hello, ${teamMemberName}!</h3>
+          <p>We are pleased to inform you that your application has been approved!</p>
+          <p>Welcome to our team!</p>
+          <b>Best regards</b>
+          <br/>
+          <h3>Hallo, ${teamMemberName}!</h3>
+          <p>Wir freuen uns, Ihnen mitteilen zu können, dass Ihre Bewerbung genehmigt wurde!</p>
+          <p>Willkommen in unserem Team!</p>
+          <b>Mit freundlichen Grüßen</b>
+          `,
+      };
+    case 'membershipRequest':
+      return {
+        subject: 'Team membership request / Teammitgliedschaftsanfrage',
+        html: `
+          <h3>Dear Website Administrator!</h3>
+          <p>Activation request received from the candidate with team member ID: ${teamMemberId}</p>
+          <br/>
+          <h3>Sehr geehrter Website-Administrator!</h3>
+          <p>Aktivierungsanfrage vom Kandidaten mit der Teammitglieds-ID erhalten: ${teamMemberId}</p>
+          `,
+      };
+    case 'membershipSuspend':
+      return {
+        subject: 'Team membership suspended / Teammitgliedschaft ausgesetzt',
+        html: `
+          <h3>Hello, ${teamMemberName}!</h3>
+          <p>We inform you that your membership in the team has been suspended.</p>
+          <p>All the best</p>
+          <br/>
+          <h3>Hallo, ${teamMemberName}!</h3>
+          <p>Wir informieren Sie, dass Ihre Mitgliedschaft im Team ausgesetzt wurde.</p>
+          <p>Alles Gute</p>
+          `,
+      };
+    case 'membershipTerminate':
+      return {
+        subject: 'Team membership terminated / Teammitgliedschaft beendet',
+        html: `
+          <h3>Hello, ${teamMemberName}!</h3>
+          <p>We inform you that your membership in the team has been terminated.</p>
+          <p>All the best</p>
+          <br/>
+          <h3>Hallo, ${teamMemberName}!</h3>
+          <p>Wir informieren Sie, dass Ihre Mitgliedschaft im Team beendet wurde.</p>
+          <p>Alles Gute</p>
+          `,
+      };
+    default:
+      return { subject: '', html: '' };
+  }
 };

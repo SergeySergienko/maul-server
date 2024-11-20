@@ -44,7 +44,11 @@ exports.usersService = {
             const { insertedId } = yield repositories_1.usersRepo.createUser(newUser);
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('User was not inserted');
-            yield mail_service_1.default.sendAccountActivationMail(email, identifier);
+            yield mail_service_1.default.sendMail({
+                to: email,
+                heading: 'accountActivate',
+                identifier,
+            });
             return (0, utils_1.userModelMapper)(Object.assign(Object.assign({}, newUser), { _id: insertedId }));
         });
     },
@@ -54,6 +58,11 @@ exports.usersService = {
             if (!updatedUser) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userDataToUpdate.id} wasn't found`);
             }
+            yield mail_service_1.default.sendMail({
+                to: updatedUser.email,
+                heading: 'roleChange',
+                role: userDataToUpdate.role,
+            });
             return (0, utils_1.userModelMapper)(updatedUser);
         });
     },

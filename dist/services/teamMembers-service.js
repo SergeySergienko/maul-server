@@ -81,7 +81,11 @@ exports.teamMembersService = {
             if (!insertedId)
                 throw api_error_1.ApiError.ServerError('Internal Server Error');
             const admins = yield _1.usersService.findUsers({ role: 'ADMIN' });
-            yield Promise.all(admins.map((admin) => mail_service_1.default.sendTeamMembershipRequestMail(admin.email, insertedId.toString())));
+            yield Promise.all(admins.map((admin) => mail_service_1.default.sendMail({
+                to: admin.email,
+                heading: 'membershipRequest',
+                teamMemberId: insertedId.toString(),
+            })));
             return (0, utils_1.teamMemberModelMapper)(Object.assign(Object.assign({}, newTeamMember), { _id: insertedId }));
         });
     },
@@ -101,10 +105,18 @@ exports.teamMembersService = {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
             if (status === 'MEMBER') {
-                yield mail_service_1.default.sendTeamMembershipApprovedMail(user.email, name);
+                yield mail_service_1.default.sendMail({
+                    to: user.email,
+                    heading: 'membershipApprove',
+                    teamMemberName: name,
+                });
             }
             else {
-                yield mail_service_1.default.sendTeamMembershipSuspendedMail(user.email, name);
+                yield mail_service_1.default.sendMail({
+                    to: user.email,
+                    heading: 'membershipSuspend',
+                    teamMemberName: name,
+                });
             }
             return (0, utils_1.teamMemberModelMapper)(changedTeamMember);
         });
@@ -148,7 +160,11 @@ exports.teamMembersService = {
             if (!user) {
                 throw api_error_1.ApiError.NotFound(`User with id: ${userId} wasn't found`);
             }
-            yield mail_service_1.default.sendTeamMembershipTerminatedMail(user.email, name);
+            yield mail_service_1.default.sendMail({
+                to: user.email,
+                heading: 'membershipTerminate',
+                teamMemberName: name,
+            });
             return id;
         });
     },

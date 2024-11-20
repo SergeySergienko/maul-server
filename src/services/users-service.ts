@@ -31,7 +31,11 @@ export const usersService = {
     const { insertedId } = await usersRepo.createUser(newUser);
     if (!insertedId) throw ApiError.ServerError('User was not inserted');
 
-    await mailService.sendAccountActivationMail(email, identifier);
+    await mailService.sendMail({
+      to: email,
+      heading: 'accountActivate',
+      identifier,
+    });
 
     return userModelMapper({
       ...newUser,
@@ -46,6 +50,13 @@ export const usersService = {
         `User with id: ${userDataToUpdate.id} wasn't found`
       );
     }
+
+    await mailService.sendMail({
+      to: updatedUser.email,
+      heading: 'roleChange',
+      role: userDataToUpdate.role,
+    });
+
     return userModelMapper(updatedUser);
   },
 

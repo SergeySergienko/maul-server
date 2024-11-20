@@ -15,7 +15,7 @@ export type UserOutputDTO = {
 
 export type UserUpdateDTO = {
   id: string;
-  role?: keyof typeof RoleModel;
+  role?: Exclude<keyof typeof RoleModel, 'OWNER'>;
   activationToken?: string;
 };
 
