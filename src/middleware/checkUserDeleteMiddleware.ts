@@ -28,11 +28,8 @@ export const checkUserDeleteMiddleware = async (
       );
     }
 
-    if (userData.id === candidateToDelete._id.toString()) {
-      throw ApiError.ForbiddenError('Not allowed to delete themselves');
-    }
-
     const hasPermission =
+      userData.id === candidateToDelete._id.toString() ||
       RoleModel[userData.role] > RoleModel[candidateToDelete.role];
 
     if (!hasPermission) {

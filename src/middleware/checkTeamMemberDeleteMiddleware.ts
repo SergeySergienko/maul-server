@@ -14,10 +14,8 @@ export const checkTeamMemberDeleteMiddleware = async (
 
     const teamMember = await teamMembersService.findTeamMember(req.params.id);
 
-    if (userData.id !== teamMember.userId) {
-      throw ApiError.ForbiddenError(
-        'No permission to delete another team member'
-      );
+    if (userData.role === 'USER' && userData.id !== teamMember.userId) {
+      throw ApiError.ForbiddenError('No permission to delete team member');
     }
 
     const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;

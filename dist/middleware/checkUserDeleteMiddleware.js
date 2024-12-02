@@ -26,10 +26,8 @@ const checkUserDeleteMiddleware = (req, res, next) => __awaiter(void 0, void 0, 
         if (teamMemberData) {
             throw api_error_1.ApiError.ForbiddenError(`Can not delete user with ${teamMemberData.status} status`);
         }
-        if (userData.id === candidateToDelete._id.toString()) {
-            throw api_error_1.ApiError.ForbiddenError('Not allowed to delete themselves');
-        }
-        const hasPermission = models_1.RoleModel[userData.role] > models_1.RoleModel[candidateToDelete.role];
+        const hasPermission = userData.id === candidateToDelete._id.toString() ||
+            models_1.RoleModel[userData.role] > models_1.RoleModel[candidateToDelete.role];
         if (!hasPermission) {
             throw api_error_1.ApiError.ForbiddenError(`No permission to delete user with ${candidateToDelete.role} role`);
         }

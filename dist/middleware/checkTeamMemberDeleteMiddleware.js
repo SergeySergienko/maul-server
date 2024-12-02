@@ -17,8 +17,8 @@ const checkTeamMemberDeleteMiddleware = (req, res, next) => __awaiter(void 0, vo
     try {
         const userData = (0, utils_1.authorizeUser)(req);
         const teamMember = yield services_1.teamMembersService.findTeamMember(req.params.id);
-        if (userData.id !== teamMember.userId) {
-            throw api_error_1.ApiError.ForbiddenError('No permission to delete another team member');
+        if (userData.role === 'USER' && userData.id !== teamMember.userId) {
+            throw api_error_1.ApiError.ForbiddenError('No permission to delete team member');
         }
         const containerName = process.env.AZURE_STORAGE_MEMBERS_CONTAINER_NAME;
         if (!containerName) {

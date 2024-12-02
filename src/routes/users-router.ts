@@ -31,7 +31,7 @@ usersRouter.put(
 );
 usersRouter.delete(
   '/:id',
-  authMiddleware('ADMIN'),
+  authMiddleware('USER'),
   validateRequest(usersValidators),
   checkUserDeleteMiddleware,
   usersController.deleteUser
